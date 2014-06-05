@@ -1,0 +1,39 @@
+{
+    "name": "miss.js",
+    "title": "Miss.js",
+    "description": "Make it simple stupid. Web app walkthroughs for maximum user conversion.",
+    "keywords": [
+        "javascript",
+        "library",
+        "user",
+        "web",
+        "app",
+        "application",
+        "walkthrough",
+        "tutorial",
+        "popover"
+    ],
+    "version": "1.0.0",
+    "author": {
+        "name": "Andrew Carpenter",
+        "email": "andrew@musocrat.com",
+        "url": "https://github.com/musocrat"
+    },
+    "maintainers": [
+        {
+            "name": "Andrew Carpenter",
+            "email": "andrew@musocrat.com",
+            "url": "https://github.com/musocrat"
+        }
+    ],
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "https://raw.github.com/musocrat/miss/master/LICENSE"
+        }
+    ],
+    "bugs": "https://github.com/musocrat/miss/issues",
+    "homepage": "https://github.com/musocrat/miss",
+    "docs": "https://github.com/musocrat/miss#readme",
+    "download": "https://github.com/musocrat/miss/archive/master.zip"
+}
