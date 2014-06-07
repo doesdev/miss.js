@@ -265,10 +265,6 @@
     ary_y.push(yv) for yk, yv of v.diff for k, v of map_y
     optimal_x = ary_x.sort((a,b) -> a - b)[0]
     optimal_y = ary_y.sort((a,b) -> a - b)[0]
-#    ary_x.sort((a,b) -> a - b)
-#    ary_y.sort((a,b) -> a - b)
-#    optimal_x = ''
-#    optimal_y = ''
     for k, v of map_x
       for xk, xv of v.diff
         if xv == optimal_x
