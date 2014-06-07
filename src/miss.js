@@ -237,7 +237,7 @@
       };
     };
     gravity = function(coords, height, width) {
-      var ary_x, ary_y, box_center, center, el_center, k, map_x, map_y, optimal_x, optimal_y, v, x, xk, xv, y, yk, yv, _ref, _ref1, _ref2, _ref3;
+      var ary_x, ary_y, box_center, break_loop, center, el_center, i, k, map_x, map_y, optimal_x, optimal_y, overlap, v, val, x, xk, xv, y, yk, yv, _i, _ref, _ref1, _ref2, _ref3;
       ary_x = [];
       ary_y = [];
       center = {
@@ -358,24 +358,44 @@
         for (xk in _ref2) {
           xv = _ref2[xk];
           if (xv === optimal_x) {
+            val = v.val[xk];
+            overlap = val < coords.top + coords.height && val + height > coords.top;
             x = {
-              val: v.val[xk],
-              position: "" + v.position + "_" + xk
+              val: val,
+              position: "" + v.position + "_" + xk,
+              overlap: overlap
             };
+            break_loop = true;
+            break;
           }
         }
+        if (break_loop) {
+          break;
+        }
       }
-      for (k in map_y) {
-        v = map_y[k];
-        _ref3 = v.diff;
-        for (yk in _ref3) {
-          yv = _ref3[yk];
-          if (yv === optimal_y) {
-            y = {
-              val: v.val[yk],
-              position: "" + v.position + "_" + yk
-            };
+      for (i = _i = 0; _i <= 8; i = ++_i) {
+        break_loop = false;
+        for (k in map_y) {
+          v = map_y[k];
+          _ref3 = v.diff;
+          for (yk in _ref3) {
+            yv = _ref3[yk];
+            val = v.val[yk];
+            if (yv === ary_y[i] && !(x.overlap && val < coords.left + coords.width && val + width > coords.left)) {
+              y = {
+                val: v.val[yk],
+                position: "" + v.position + "_" + yk
+              };
+              break_loop = true;
+              break;
+            }
           }
+          if (break_loop) {
+            break;
+          }
+        }
+        if (break_loop) {
+          break;
         }
       }
       return {

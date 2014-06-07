@@ -265,12 +265,28 @@
     ary_y.push(yv) for yk, yv of v.diff for k, v of map_y
     optimal_x = ary_x.sort((a,b) -> a - b)[0]
     optimal_y = ary_y.sort((a,b) -> a - b)[0]
+#    ary_x.sort((a,b) -> a - b)
+#    ary_y.sort((a,b) -> a - b)
+#    optimal_x = ''
+#    optimal_y = ''
     for k, v of map_x
       for xk, xv of v.diff
-        if xv == optimal_x then x = val: v.val[xk], position: "#{v.position}_#{xk}"
-    for k, v of map_y
-      for yk, yv of v.diff
-        if yv == optimal_y then y = val: v.val[yk], position: "#{v.position}_#{yk}"
+        if xv == optimal_x
+          val = v.val[xk]
+          overlap = (val < coords.top + coords.height && val + height > coords.top)
+          x = val: val, position: "#{v.position}_#{xk}", overlap: overlap; break_loop = true; break
+      break if break_loop
+
+    for i in [0..8]
+      break_loop = false
+      for k, v of map_y
+        for yk, yv of v.diff
+          val = v.val[yk]
+          if yv == ary_y[i] && !(x.overlap && val < coords.left + coords.width && val + width > coords.left)
+            y = val: v.val[yk], position: "#{v.position}_#{yk}"; break_loop = true; break
+        break if break_loop
+      break if break_loop
+
     x: x.val
     y: y.val
 
