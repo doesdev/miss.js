@@ -200,66 +200,29 @@
     box_center =
       x: height / 2
       y: width / 2
-    map_x = [
-      diff:
-        top: Math.abs(coords.top - box_center.x - center.x)
-        middle: Math.abs(coords.top - center.x)
-        bottom: Math.abs(coords.top + box_center.x - center.x)
-      val:
-        top: coords.top - height
-        middle: coords.top - box_center.x
-        bottom: coords.top
-      position: 'top'
-    ,
-      diff:
-        top: Math.abs(coords.top + el_center.x - box_center.x - center.x)
-        middle: Math.abs(coords.top + el_center.x - center.x)
-        bottom: Math.abs(coords.top + el_center.x + box_center.x - center.x)
-      val:
-        top: coords.top + el_center.x - height
-        middle: coords.top + el_center.x - box_center.x
-        bottom: coords.top + el_center.x
-      position: 'middle'
-    ,
-      diff:
-        top: Math.abs(coords.bottom - box_center.x - center.x)
-        middle: Math.abs(coords.bottom - center.x)
-        bottom: Math.abs(coords.bottom + box_center.x - center.x)
-      val:
-        top: coords.bottom - height
-        middle: coords.bottom - box_center.x
-        bottom: coords.bottom
-      position: 'bottom']
-    map_y = [
-      diff:
-        left: Math.abs(coords.left - box_center.y - center.y)
-        middle: Math.abs(coords.left - center.y)
-        right: Math.abs(coords.left + box_center.y - center.y)
-      val: 
-        left: coords.left - width
-        middle: coords.left - box_center.y
-        right: coords.left
-      position: 'left'
-    ,
-      diff:
-        left: Math.abs(coords.left + el_center.y - box_center.y - center.y)
-        middle: Math.abs(coords.left + el_center.y - center.y)
-        right: Math.abs(coords.left + el_center.y + box_center.y - center.y)
-      val: 
-        left: coords.left + el_center.y - width
-        middle: coords.left + el_center.y - box_center.y
-        right: coords.left + el_center.y
-      position: 'middle'
-    ,
-      diff:
-        left: Math.abs(coords.right - box_center.y - center.y)
-        middle: Math.abs(coords.right - center.y)
-        right: Math.abs(coords.right + box_center.y - center.y)
-      val: 
-        left: coords.right - width
-        middle: coords.right - box_center.y
-        right: coords.right
-      position: 'right']
+    mapping_x =
+      plane: 'x',
+      metric: height,
+      array: map_x = [],
+      setup: {top: null, middle: [el_center.x, 'top'], bottom: null}
+    mapping_y =
+      plane: 'y',
+      metric: width,
+      array: map_y = [],
+      setup: {left: null, middle: [el_center.y, 'left'], right: null}
+    for args in [mapping_x, mapping_y]
+      for pos, arg of args.setup
+        if arg then add = arg[0]; loc = arg[1] else add = 0; loc = pos
+        diff = {}
+        diff[Object.keys(args.setup)[0]] = Math.abs(coords[loc] - box_center[args.plane] - center[args.plane] + add)
+        diff[Object.keys(args.setup)[1]] = Math.abs(coords[loc] - center[args.plane] + add)
+        diff[Object.keys(args.setup)[2]] = Math.abs(coords[loc] + box_center[args.plane] - center[args.plane] + add)
+        val = {}
+        val[Object.keys(args.setup)[0]] = coords[loc] - args.metric + add
+        val[Object.keys(args.setup)[1]] = coords[loc] - box_center[args.plane] + add
+        val[Object.keys(args.setup)[2]] = coords[loc] + add
+        position = pos
+        args.array.push({diff, val, position})
 
     ary_x.push(xv) for xk, xv of v.diff for k, v of map_x
     ary_y.push(yv) for yk, yv of v.diff for k, v of map_y

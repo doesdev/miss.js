@@ -237,7 +237,7 @@
       };
     };
     gravity = function(coords, height, width) {
-      var ary_x, ary_y, box_center, break_loop, center, el_center, i, k, map_x, map_y, optimal_x, optimal_y, overlap, v, val, x, xk, xv, y, yk, yv, _i, _ref, _ref1, _ref2, _ref3;
+      var add, arg, args, ary_x, ary_y, box_center, break_loop, center, diff, el_center, i, k, loc, map_x, map_y, mapping_x, mapping_y, optimal_x, optimal_y, overlap, pos, position, v, val, x, xk, xv, y, yk, yv, _i, _j, _len, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
       ary_x = [];
       ary_y = [];
       center = {
@@ -252,97 +252,68 @@
         x: height / 2,
         y: width / 2
       };
-      map_x = [
-        {
-          diff: {
-            top: Math.abs(coords.top - box_center.x - center.x),
-            middle: Math.abs(coords.top - center.x),
-            bottom: Math.abs(coords.top + box_center.x - center.x)
-          },
-          val: {
-            top: coords.top - height,
-            middle: coords.top - box_center.x,
-            bottom: coords.top
-          },
-          position: 'top'
-        }, {
-          diff: {
-            top: Math.abs(coords.top + el_center.x - box_center.x - center.x),
-            middle: Math.abs(coords.top + el_center.x - center.x),
-            bottom: Math.abs(coords.top + el_center.x + box_center.x - center.x)
-          },
-          val: {
-            top: coords.top + el_center.x - height,
-            middle: coords.top + el_center.x - box_center.x,
-            bottom: coords.top + el_center.x
-          },
-          position: 'middle'
-        }, {
-          diff: {
-            top: Math.abs(coords.bottom - box_center.x - center.x),
-            middle: Math.abs(coords.bottom - center.x),
-            bottom: Math.abs(coords.bottom + box_center.x - center.x)
-          },
-          val: {
-            top: coords.bottom - height,
-            middle: coords.bottom - box_center.x,
-            bottom: coords.bottom
-          },
-          position: 'bottom'
+      mapping_x = {
+        plane: 'x',
+        metric: height,
+        array: map_x = [],
+        setup: {
+          top: null,
+          middle: [el_center.x, 'top'],
+          bottom: null
         }
-      ];
-      map_y = [
-        {
-          diff: {
-            left: Math.abs(coords.left - box_center.y - center.y),
-            middle: Math.abs(coords.left - center.y),
-            right: Math.abs(coords.left + box_center.y - center.y)
-          },
-          val: {
-            left: coords.left - width,
-            middle: coords.left - box_center.y,
-            right: coords.left
-          },
-          position: 'left'
-        }, {
-          diff: {
-            left: Math.abs(coords.left + el_center.y - box_center.y - center.y),
-            middle: Math.abs(coords.left + el_center.y - center.y),
-            right: Math.abs(coords.left + el_center.y + box_center.y - center.y)
-          },
-          val: {
-            left: coords.left + el_center.y - width,
-            middle: coords.left + el_center.y - box_center.y,
-            right: coords.left + el_center.y
-          },
-          position: 'middle'
-        }, {
-          diff: {
-            left: Math.abs(coords.right - box_center.y - center.y),
-            middle: Math.abs(coords.right - center.y),
-            right: Math.abs(coords.right + box_center.y - center.y)
-          },
-          val: {
-            left: coords.right - width,
-            middle: coords.right - box_center.y,
-            right: coords.right
-          },
-          position: 'right'
+      };
+      mapping_y = {
+        plane: 'y',
+        metric: width,
+        array: map_y = [],
+        setup: {
+          left: null,
+          middle: [el_center.y, 'left'],
+          right: null
         }
-      ];
+      };
+      _ref = [mapping_x, mapping_y];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        args = _ref[_i];
+        _ref1 = args.setup;
+        for (pos in _ref1) {
+          arg = _ref1[pos];
+          if (arg) {
+            add = arg[0];
+            loc = arg[1];
+          } else {
+            add = 0;
+            loc = pos;
+          }
+          diff = {};
+          diff[Object.keys(args.setup)[0]] = Math.abs(coords[loc] - box_center[args.plane] - center[args.plane] + add);
+          diff[Object.keys(args.setup)[1]] = Math.abs(coords[loc] - center[args.plane] + add);
+          diff[Object.keys(args.setup)[2]] = Math.abs(coords[loc] + box_center[args.plane] - center[args.plane] + add);
+          val = {};
+          val[Object.keys(args.setup)[0]] = coords[loc] - args.metric + add;
+          val[Object.keys(args.setup)[1]] = coords[loc] - box_center[args.plane] + add;
+          val[Object.keys(args.setup)[2]] = coords[loc] + add;
+          position = pos;
+          args.array.push({
+            diff: diff,
+            val: val,
+            position: position
+          });
+        }
+      }
       for (k in map_x) {
         v = map_x[k];
-        _ref = v.diff;
-        for (xk in _ref) {
-          xv = _ref[xk];
+        _ref2 = v.diff;
+        for (xk in _ref2) {
+          xv = _ref2[xk];
           ary_x.push(xv);
         }
       }
       for (k in map_y) {
         v = map_y[k];
-        _ref1 = v.diff;
-        for (yk in _ref1) {
-          yv = _ref1[yk];
+        _ref3 = v.diff;
+        for (yk in _ref3) {
+          yv = _ref3[yk];
           ary_y.push(yv);
         }
       }
@@ -354,9 +325,9 @@
       })[0];
       for (k in map_x) {
         v = map_x[k];
-        _ref2 = v.diff;
-        for (xk in _ref2) {
-          xv = _ref2[xk];
+        _ref4 = v.diff;
+        for (xk in _ref4) {
+          xv = _ref4[xk];
           if (xv === optimal_x) {
             val = v.val[xk];
             overlap = val < coords.top + coords.height && val + height > coords.top;
@@ -373,13 +344,13 @@
           break;
         }
       }
-      for (i = _i = 0; _i <= 8; i = ++_i) {
+      for (i = _j = 0; _j <= 8; i = ++_j) {
         break_loop = false;
         for (k in map_y) {
           v = map_y[k];
-          _ref3 = v.diff;
-          for (yk in _ref3) {
-            yv = _ref3[yk];
+          _ref5 = v.diff;
+          for (yk in _ref5) {
+            yv = _ref5[yk];
             val = v.val[yk];
             if (yv === ary_y[i] && !(x.overlap && val < coords.left + coords.width && val + width > coords.left)) {
               y = {
