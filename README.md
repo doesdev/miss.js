@@ -24,10 +24,9 @@ Why?
 We built Miss.js with the following requirements in mind.
 
 - It should stand alone (no web apps, no generators, no frameworks, no libraries, no cost)
-- It should provide industry standard features (steps, highlighting, navigation, etc...)
-- It should provide an easy to use API that allow for per element options
-- It should provide auto gravitation of popover towards page center (no more direction specification, YAY!!!)
-- It should be lightweight
+- It should be lightweight but still provide industry standard features (steps, highlighting, navigation, etc...)
+- It should provide an easy to use API that allows for per element options and theme
+- It should provide intelligent positioning of popover (no more direction specification, YAY!!!)
 
 How?
 ----
