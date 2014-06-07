@@ -5,7 +5,7 @@
     var Miss, backdrop, backdropCanvas, colorConvert, coords, extend, gravity, message, miss, pageNumbers, prepHex, resize, showHideEl, sortMissies, testEl,
       _this = this;
     miss = function(misset) {
-      var defaults, el, i, k, msg, opts, setDefaults, title, v, _i, _len, _ref, _ref1;
+      var defaults, el, i, k, msg, opts, setDefaults, title, type, v, _i, _len, _ref, _ref1;
       miss.missies = miss.missies || [];
       if (!miss.global) {
         miss.settings(misset.settings || null);
@@ -26,13 +26,20 @@
           v = _ref[k];
           defaults = setDefaults();
           opts = extend(extend(defaults, v), miss.global);
-          _ref1 = document.querySelectorAll.call(document, k);
-          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
-            el = _ref1[_i];
-            title = opts.title || el.dataset.missTitle || null;
-            msg = message(opts.msg) || message(el.dataset.missMsg) || null;
-            if (!!(title || msg)) {
-              miss.missies.push(new Miss(el, i = i + 1, opts, title, msg));
+          if ((type = k.toLowerCase()) === 'welcome' || (type === 'exit')) {
+            msg = message(opts.msg);
+            if (!!(opts.title && msg)) {
+              miss.missies.push(new Miss(type, i = i + 1, opts, opts.title, msg));
+            }
+          } else {
+            _ref1 = document.querySelectorAll.call(document, k);
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              el = _ref1[_i];
+              title = opts.title || el.dataset.missTitle || null;
+              msg = message(opts.msg) || message(el.dataset.missMsg) || null;
+              if (!!(title && msg)) {
+                miss.missies.push(new Miss(el, i = i + 1, opts, title, msg));
+              }
             }
           }
         }
@@ -49,8 +56,19 @@
         this.highlight = __bind(this.highlight, this);
         this.boxSizing = __bind(this.boxSizing, this);
         this.buildBox = __bind(this.buildBox, this);
-        this.el = el;
-        this.order = parseInt(this.el.dataset.missOrder, 10) || parseInt(opts.order, 10) || 100 + i;
+        switch (el) {
+          case 'welcome':
+            this.order = 0;
+            this.el = null;
+            break;
+          case 'exit':
+            this.order = 1000;
+            this.el = null;
+            break;
+          default:
+            this.order = parseInt(el.dataset.missOrder, 10) || parseInt(opts.order, 10) || 100 + i;
+            this.el = el;
+        }
         this.opts = opts;
         this.title = title;
         this.msg = msg;
@@ -102,7 +120,9 @@
 
       Miss.prototype.boxSizing = function() {
         var bd_miss_visible, box_miss_visible, coord, gravitate;
-        coord = coords(this.el);
+        if (this.el) {
+          coord = coords(this.el);
+        }
         bd_miss_visible = miss.bd.miss_visible || null;
         box_miss_visible = this.box.miss_visible || null;
         if (!bd_miss_visible) {
@@ -115,9 +135,9 @@
         }
         this.box.style.maxWidth = "30%";
         this.box.style.maxHeight = "60%";
-        gravitate = gravity(coord, this.box.offsetHeight, this.box.offsetWidth);
-        this.box.style.top = "" + gravitate.x + "px";
-        this.box.style.left = "" + gravitate.y + "px";
+        gravitate = this.el ? gravity(coord, this.box.offsetHeight, this.box.offsetWidth) : {};
+        this.box.style.top = "" + (gravitate.x || (testEl().height / 2) - (this.box.offsetHeight / 2)) + "px";
+        this.box.style.left = "" + (gravitate.y || (testEl().width / 2) - (this.box.offsetWidth / 2)) + "px";
         if (!bd_miss_visible) {
           miss.bd.style.visibility = '';
           miss.off();
@@ -156,11 +176,15 @@
       Miss.prototype.resize = function() {
         this.boxSizing();
         backdropCanvas();
-        return this.highlight();
+        if (this.el) {
+          return this.highlight();
+        }
       };
 
       Miss.prototype.on = function() {
-        this.highlight();
+        if (this.el) {
+          this.highlight();
+        }
         showHideEl(this.box, true);
         return pageNumbers(this.box);
       };

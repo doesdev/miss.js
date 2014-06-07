@@ -16,10 +16,14 @@
       for k, v of misset.elements
         defaults = setDefaults()
         opts = extend( extend(defaults, v), miss.global)
-        for el in document.querySelectorAll.call(document, k)
-          title = opts.title || el.dataset.missTitle || null
-          msg = message(opts.msg) || message(el.dataset.missMsg) || null
-          miss.missies.push(new Miss(el, i = i + 1, opts, title, msg)) unless !(title || msg)
+        if (type = k.toLowerCase()) == 'welcome' || (type == 'exit')
+          msg = message(opts.msg)
+          miss.missies.push(new Miss(type, i = i + 1, opts, opts.title, msg)) unless !(opts.title && msg)
+        else
+          for el in document.querySelectorAll.call(document, k)
+            title = opts.title || el.dataset.missTitle || null
+            msg = message(opts.msg) || message(el.dataset.missMsg) || null
+            miss.missies.push(new Miss(el, i = i + 1, opts, title, msg)) unless !(title && msg)
       sortMissies()
       miss.on()
       miss.missies[0].on()
@@ -27,8 +31,10 @@
   # Constructor
   class Miss
     constructor: (el, i, opts, title, msg) ->
-      @el = el
-      @order = parseInt(@el.dataset.missOrder, 10) || parseInt(opts.order, 10) || 100 + i
+      switch el
+        when 'welcome' then @order = 0; @el = null
+        when 'exit' then @order = 1000; @el = null
+        else @order = parseInt(el.dataset.missOrder, 10) || parseInt(opts.order, 10) || 100 + i; @el = el
       @opts = opts
       @title = title
       @msg = msg
@@ -80,7 +86,7 @@
       this.boxSizing()
 
     boxSizing: () =>
-      coord = coords(@el)
+      coord = coords(@el) if @el
       # ensure box is on dom for obtaining dimensions
       bd_miss_visible = miss.bd.miss_visible || null
       box_miss_visible = @box.miss_visible || null
@@ -94,9 +100,9 @@
       @box.style.maxWidth = "30%"
       @box.style.maxHeight = "60%"
       # set box gravity
-      gravitate = gravity(coord, @box.offsetHeight, @box.offsetWidth)
-      @box.style.top = "#{gravitate.x}px"
-      @box.style.left = "#{gravitate.y}px"
+      gravitate = if @el then gravity(coord, @box.offsetHeight, @box.offsetWidth) else {}
+      @box.style.top = "#{gravitate.x || (testEl().height / 2) - (@box.offsetHeight / 2)}px"
+      @box.style.left = "#{gravitate.y || (testEl().width / 2) - (@box.offsetWidth / 2)}px"
       # hide again
       unless bd_miss_visible
         miss.bd.style.visibility = ''
@@ -129,10 +135,10 @@
     resize: () =>
       this.boxSizing()
       backdropCanvas()
-      this.highlight()
+      this.highlight() if @el
 
     on: () =>
-      this.highlight()
+      this.highlight() if @el
       showHideEl(@box, true)
       pageNumbers(@box)
 
