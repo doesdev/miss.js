@@ -16,7 +16,7 @@
       for k, v of misset.elements
         defaults = setDefaults()
         opts = extend( extend(defaults, v), miss.global)
-        if (type = k.toLowerCase()) == 'welcome' || (type == 'exit')
+        if (type = k.toLowerCase()) == 'welcome' || type == 'exit'
           msg = message(opts.msg)
           miss.missies.push(new Miss(type, i = i + 1, opts, opts.title, msg)) unless !(opts.title && msg)
         else
@@ -25,6 +25,7 @@
             msg = message(opts.msg) || message(el.dataset.missMsg) || null
             miss.missies.push(new Miss(el, i = i + 1, opts, title, msg)) unless !(title && msg)
       sortMissies()
+      bindHover()
       miss.on()
       miss.missies[0].on()
 
@@ -41,7 +42,7 @@
       @index = i
 
       # Functions called on initialize
-      this.buildBox()
+      @buildBox()
 
     buildBox: () =>
       # create elements with data
@@ -49,6 +50,7 @@
       box.id = "miss_#{@order}"
       box.className = 'miss-box popover'
       box.style.position = 'fixed'
+      box.style.zIndex = @opts.z_index + 1
       title_box = document.createElement('div')
       title_box.className = 'miss-titlebar popover-title'
       close = '<span style="float:right;cursor:pointer;" onclick="miss.off()"
@@ -81,9 +83,9 @@
       msg_box.appendChild(nav_box)
       box.appendChild(msg_box)
       showHideEl(box, false)
-      miss.bd.appendChild(box)
+      document.body.appendChild(box)
       @box = box
-      this.boxSizing()
+      @boxSizing()
 
     boxSizing: () =>
       coord = coords(@el) if @el
@@ -134,19 +136,36 @@
 
     resize: () =>
       this.boxSizing()
-      backdropCanvas()
-      this.highlight() if @el
+      backdropCanvas() unless @alone
+      @highlight() if @el
 
-    on: () =>
-      this.highlight() if @el
-      showHideEl(@box, true)
+    bindOn: (event) =>
+      switch @opts.key_modifier.toLowerCase()
+        when 'alt' then key = 'altKey'
+        when 'ctrl', 'control' then key = 'ctrlKey'
+        when 'shift' then key = 'shiftKey'
+        when 'cmd', 'command', 'meta' then key = 'metaKey'
+        else return
+      @on(true) if event[key]
+
+    bindOff: () =>
+      @off(true)
+
+    on: (alone = null) =>
+      miss.on() if miss.bd.visible && !alone
+      miss.off() if alone
+      @highlight() if @el
+      showHideEl(@box, true, alone)
       pageNumbers(@box)
+      @alone = alone
 
-    off: () =>
+    off: (alone = null) =>
       hl = document.getElementById("miss_hl_#{@index}")
       hl.parentNode.removeChild(hl) if hl
-      backdropCanvas()
+      backdropCanvas(alone)
       showHideEl(@box, false)
+      miss.off() if alone
+      @alone = null
 
   # Helpers
   showHideEl = (el, toggle) ->
@@ -171,6 +190,45 @@
   # Sort missies by order
   sortMissies = () ->
     miss.missies.sort((a, b) -> a.order - b.order)
+
+  # Backdrop
+  backdrop = (toggle) ->
+    unless bd = document.getElementById('miss_bd')
+      opts =  miss.global
+      bd = document.createElement('div')
+      bd.id = 'miss_bd'
+      bd.style.cssText = "position:fixed;z-index:#{opts.z_index};top:0;right:0;bottom:0;left:0;"
+      showHideEl(bd, false)
+      document.body.appendChild(bd)
+    miss.bd = bd
+    backdropCanvas()
+    showHideEl(bd, toggle)
+
+  # Canvas overlay for backdrop
+  backdropCanvas = () ->
+    screen = testEl()
+    opts =  miss.global
+    unless canvas = document.getElementById('miss_bd_canvas')
+      bd = miss.bd
+      canvas = document.createElement('canvas')
+      canvas.id = 'miss_bd_canvas'
+      bd.appendChild(canvas)
+    canvas.width = screen.width
+    canvas.height = screen.height
+    ctx = canvas.getContext('2d')
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.globalAlpha = opts.backdrop_opacity
+    ctx.fillStyle = "##{prepHex(opts.backdrop_color)}"
+    ctx.fillRect(0,0,screen.width,screen.height)
+
+  # Format message
+  message = (msg) ->
+    if (/#{(.*?)}/.test(msg))
+      msg_el = document.querySelector(msg.match(/#{(.*?)}/)[1])
+      showHideEl(msg_el, false)
+      return msg_el.innerHTML
+    else
+      return msg
 
   # Get element coordinates
   coords = (el) ->
@@ -255,76 +313,9 @@
     x: x.val
     y: y.val
 
-  # Backdrop
-  backdrop = (toggle) ->
-    unless bd = document.getElementById('miss_bd')
-      opts =  miss.global
-      bd = document.createElement('div')
-      bd.id = 'miss_bd'
-      bd.style.cssText = "position:fixed;z-index:#{opts.z_index};top:0;right:0;bottom:0;left:0;"
-      showHideEl(bd, false)
-      document.body.appendChild(bd)
-    miss.bd = bd
-    backdropCanvas()
-    showHideEl(bd, toggle)
-
-  backdropCanvas = () ->
-    screen = testEl()
-    opts =  miss.global
-    unless canvas = document.getElementById('miss_bd_canvas')
-      bd = miss.bd
-      canvas = document.createElement('canvas')
-      canvas.id = 'miss_bd_canvas'
-      bd.appendChild(canvas)
-    canvas.width = screen.width
-    canvas.height = screen.height
-    ctx = canvas.getContext('2d')
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.globalAlpha = opts.backdrop_opacity
-    ctx.fillStyle = "##{prepHex(opts.backdrop_color)}"
-    ctx.fillRect(0,0,screen.width,screen.height)
-
-  # Format message
-  message = (msg) ->
-    if (/#{(.*?)}/.test(msg))
-      msg_el = document.querySelector(msg.match(/#{(.*?)}/)[1])
-      showHideEl(msg_el, false)
-      return msg_el.innerHTML
-    else
-      return msg
-
-  # Global settings
-  miss.settings = (set) ->
-    miss.global = extend(
-      theme: null
-      trigger: null
-      key_on: null
-      key_off: null
-      key_hover: null
-      backdrop_color: '#000'
-      backdrop_opacity: 0.5
-      z_index: 2100
-      welcome_title: null
-      welcome_msg: null
-      highlight: true
-      highlight_width: 3
-      highlight_color: '#fff'
-    , set)
-
-  # Resize events
-  resize = () ->
-    if m = miss.current()
-      m.missie.resize()
-
-  window.onresize = -> resize()
-  window.onscroll = -> resize()
-  window.onorientationchange = -> resize()
-
   # Navigate missies
   miss.current = () ->
-    for m, i in miss.missies
-      if m.box.miss_visible
-        return {index: i, missie: m}
+    return {index: i, missie: m} for m, i in miss.missies when m.box.miss_visible
 
   pageNumbers = (box) ->
     if current = miss.current()
@@ -341,29 +332,83 @@
       current.missie.off()
       if miss.missies[current.index - 1] then return miss.missies[current.index - 1].on() else return miss.off()
 
-  miss.first = () ->->
+  miss.first = () ->
     if current = miss.current()
       current.missie.off()
       miss.missies[0].on()
 
-  miss.last = () ->->
+  miss.last = () ->
     if current = miss.current()
       current.missie.off()
       miss.missies[miss.missies.length - 1].on()
 
+  # Resize event handlers
+  resize = () ->
+    missie.resize() for missie in miss.missies
+
+  window.onresize = -> resize()
+  window.onscroll = -> resize()
+  window.onorientationchange = -> resize()
+
+  # Keyboard and mouse event handlers
+  navWithKeys = (event) ->
+    if miss.current()
+      key = event.which || event.char || event.charCode || event.key || event.keyCode
+      miss.previous() if key == 37
+      miss.next() if key == 39
+      miss.off() if key == 27
+      miss.destroy() if key == 46
+
+  document.addEventListener('keydown', navWithKeys, false)
+
+  bindHover = () ->
+    return unless miss.global.key_modifier
+    lonelyMissieBind(missie) for missie in miss.missies when missie.el
+
+  lonelyMissieBind = (missie) ->
+    missie.el.addEventListener('mouseenter', missie.bindOn, false)
+    missie.el.addEventListener('mouseleave', missie.bindOff, false)
+
   # Plugin states
-  miss.on = () ->
-    backdrop(true)
+  miss.on = (alone = null) ->
+    backdrop(true, alone)
 
   miss.off = () ->
+    missie.off() for missie in miss.missies
     backdrop(false)
 
   miss.destroy = () =>
+    for missie in miss.missies
+      if missie.el
+        missie.el.removeEventListener('mouseenter', missie.bindOn, false)
+        missie.el.removeEventListener('mouseleave', missie.bindOff, false)
+      missie.box.parentNode.removeChild(missie.box) if missie.box
     test = document.getElementById('miss-size-test')
     test.parentNode.removeChild(test)
     bd = document.getElementById('miss_bd')
     bd.parentNode.removeChild(bd)
+    document.removeEventListener('keydown', navWithKeys, false)
     delete this.miss
+
+  # Global settings
+  miss.settings = (set) ->
+    miss.global = extend(
+      theme: null
+      trigger_el: null
+      key_modifier: null # 'alt', 'ctrl', 'shift', 'cmd'
+      key_on: null
+      key_off: null
+      key_hover: null
+      backdrop: true
+      backdrop_color: '#000'
+      backdrop_opacity: 0.5
+      z_index: 2100
+      welcome_title: null
+      welcome_msg: null
+      highlight: true
+      highlight_width: 3
+      highlight_color: '#fff'
+    , set)
 
   this.miss = miss
 
