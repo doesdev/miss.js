@@ -62,13 +62,22 @@ module.exports = function (grunt) {
             options: {
                 banner: "<%= meta.banner %>"
             }
+        },
+        // Codo documentation
+        codo: {
+            options: {
+                title: "Miss.js",
+                output: "doc",
+                inputs: ["src/miss.coffee"]
+            }
         }
     });
     grunt.loadNpmTasks("grunt-contrib-concat");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-coffee");
-    grunt.registerTask("default", ["coffee", "jshint", "uglify"]);
+    grunt.loadNpmTasks("grunt-codo");
+    grunt.registerTask("default", ["coffee", "jshint", "uglify", "codo"]);
     grunt.registerTask("travis", ["jshint"]);
 
 };
