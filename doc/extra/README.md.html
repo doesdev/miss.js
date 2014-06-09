@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>Miss.js</title>
+  <script src='../javascript/application.js'></script>
+  <script src='../javascript/search.js'></script>
+  <link rel='stylesheet' href='../stylesheets/application.css' type='text/css'>
+</head>
+  <body>
+    <div id='base' data-path='../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../extra/README.md.html' title='Miss.js'>
+      Miss.js
+    </a>
+    &raquo;
+    <a href='../alphabetical_index.html' title='Index'>
+      Index
+    </a>
+    &raquo;
+    <span class='title'>README.md</span>
+  </div>
+</div>
+    <div id='content'>
+      <nav class='toc'>
+        <p class='title'>
+          <a class='hide_toc' href='#'>
+            <strong>Table of Contents</strong>
+          </a>
+          <small>
+            (<a class='float_toc' href='#'>left</a>)
+          </small>
+        </p>
+      </nav>
+      <div id='filecontents'>
+        <h1 id="-alt-text-http-musocrat-github-io-miss-img-miss-js-logo-100-png-miss-js-logo-miss-js-build-status-https-travis-ci-org-musocrat-miss-png-https-travis-ci-org-musocrat-miss-"><img src="http://musocrat.github.io/miss/img/miss.js-logo-100.png" alt="alt text" title="Miss.js Logo"> Miss.js <a href="https://travis-ci.org/musocrat/miss"><img src="https://travis-ci.org/musocrat/miss.png" alt="Build Status"></a></h1>
+<h3 id="make-it-simple-stupid-">Make it simple stupid.</h3><p>Miss.js gives you the power to guide users through your app, achieve user acceptance, and maximize your conversion rate. 
+It is dependency free and provides a simple API for easy implementation. </p><h3 id="table-of-contents">Table of Contents</h3>
+<ul>
+<li><a href="#why">Why</a>    </li>
+<li><a href="#how">How</a>    </li>
+<li><a href="#features">Features</a>  </li>
+<li><a href="#demos">Demos</a></li>
+<li><a href="#docs">Docs</a><ul>
+<li><a href="#getting-started">Getting Started</a>    </li>
+<li><a href="#passing-in-options">Passing in Options</a>    </li>
+<li><a href="#available-options">Available Options</a></li>
+</ul>
+</li>
+<li><a href="#todo">ToDo</a> </li>
+<li><a href="#alternatives">Alternatives</a>  </li>
+<li><a href="#contributing">Contributing</a>        </li>
+</ul>
+<h2 id="why-">Why?</h2><p>We built Miss.js with the following requirements in mind.</p><ul>
+<li>It should stand alone (no web apps, no generators, no frameworks, no libraries, no cost)</li>
+<li>It should be lightweight but still provide industry standard features (steps, highlighting, navigation, etc...)</li>
+<li>It should provide an easy to use API that allows for per element options and theme</li>
+<li>It should provide intelligent positioning of popover (no more direction specification, YAY!!!)</li>
+</ul>
+<h2 id="how-">How?</h2>
+<!--
+Simple. Add the js to your project (along with jQuery), add the appropriate data atrributes 
+like so `data-video-id="y-XbTtgr8J8uU"`, then initialize on the target and enjoy your video 
+lightbox / popover enhanced element!
+-->
+
+<h2 id="features">Features</h2>
+<!--
+- Simple access to all embed API options for both providers
+- Lots of options to customize and beautify your lightboxes
+- Intelligent popover auto positioning gravitates to page center
+- Lazy loading of videos prevents slow page load due to video embeds
+- Rick Roll with ease (don't pass video id, add rick_roll option to prevent closing)
+-->
+
+<h2 id="demos">Demos</h2>
+<!--
+Check the [GH Project Page](http://musocrat.github.io/jquery-video-lightning/) for demos.
+-->
+
+<h2 id="docs">Docs</h2>
+<h3 id="getting-started">Getting Started</h3>
+<!--
+**i.**  Add script where you desire *(bottom of body is recommended)*
+```html
+<script src="javascripts/jquery-video-lightning.js"></script>
+```
+**ii.** Add vendor prefixed video id to target element *(i.e. Youtube:* `data-video-id="y-PKffm2uI4dk"`, 
+*Vimeo:* `data-video-id="v-29749357"`)
+```html
+<span class="video-link" data-video-id="y-PKffm2uI4dk">Youtube</span>
+```
+**iii.**  Initialize it on the desired elements with any options you please 
+*(options can also be passed as data attributes)*
+```html
+<script>
+    $(function() {
+        $(".video-link").jqueryVideoLightning({
+            autoplay: 1,
+            color: "white"
+        });
+    });
+</script>
+```
+-->
+
+<h3 id="passing-in-options">Passing in Options</h3>
+<!--
+Options can be passed in either of two ways. They can be passed in the initialization like so:
+```javascript
+$(function() {
+    $(".video-link").jqueryVideoLightning({
+        width: "1280px",
+        height: "720px",
+        autoplay: 1
+    });
+});
+```
+Or they can be passed as data attributes: *(Note that data attributes are all prefixed with 
+`data-video` and underscored options should be dashed instead in data attributes. 
+So `start_time` becomes `data-video-start-time`)*
+```html
+<div class="video-link" data-video-id="y-PKffm2uI4dk" data-video-width="1280px" 
+data-video-height="720px" data-video-autoplay="1" ></div>
+```
+-->
+
+<h3 id="available-options">Available Options</h3>
+<!--
+jQuery Video Lightning exposes all available basic API options for both Youtube and Vimeo. 
+There are also a number of effect and behavior options that are available. The following 
+is the current list of available options.
+
+- **width** *(default="640px")*
+    Y&V: video width in px
+- **height** *(default="390px")*
+    Y&V: video height in px
+- **autoplay** *(default=0)*
+    Y&V: start playback immediately (0,1)
+- **autohide** *(default=2)*
+    Y: auto hide controls after video load (0,1,2)
+- **controls** *(default=1)*
+    Y: display controls (0,1,2)
+- **iv_load_policy** *(default=1)*
+    Y: display annotations (1,3)
+- **loop** *(default=0)*
+    Y&V: loop video playback (0,1)
+- **modestbranding** *(default=0)*
+    Y: hide large Youtube logo (0,1)
+- **playlist** *(default="")*
+    Y: comma-separated list of video IDs to play (ex. "WkgWvaFrJv8,VZPxHUpdAGw")
+- **related** *(default=0)*
+    Y: show related videos when playback is finished (0,1)
+- **showinfo** *(default=1)*
+    Y: display title, uploader (0,1)  V: display title (0,1)
+- **start_time** *(default=0)*
+    Y: playback start position in seconds (ex. "132" starts at 2mins, 12secs)
+- **theme** *(default="dark")*
+    Y: player theme ("dark","light")
+- **color** *(default="")*
+    Y: player controls color ("red","white") V: player controls color (hex code default is "#00adef")
+- **byline** *(default=1)*
+    V: display byline (0,1)
+- **portrait** *(default=1)*
+    V: display user's portrait (0,1)
+- **ease_in** *(default=300)*
+    Time in ms of lightbox fade in
+- **ease_out** *(default=1)*
+    Time in ms of lightbox fade out
+- **z_index** *(default=21000)*
+    Z-index of page overlay
+- **backdrop_color** *(default="#000")*
+    Color of page overlay
+- **backdrop_opacity** *(default=1)*
+    Opacity of page overlay
+- **glow** *(default=0)*
+    Glow around video frame
+- **glow_color** *(default="#fff")*
+    Glow color around video frame
+- **rick_roll** *(default=0)*
+    Make video un-closable (0,1)
+- **cover** *(default=0)*
+    Display cover image (0,1)
+- **popover** *(default=0)*
+    Open in popover instead of lightbox (0,1)
+- **popover_x** *(default="auto")*
+    X position of popover ("auto","left","center","right")
+- **popover_y** *(default="auto")*
+    Y position of popover ("auto","top","center","bottom")
+-->
+
+<h2 id="todo">ToDo</h2>
+<!--
+1. Add auto close option
+-->
+
+<h2 id="alternatives">Alternatives</h2><p>There are quite a few commercial projects out there which provide top notch app walkthrough services. 
+That being said, we love open source and could not recommend a commercial product over some 
+of the great projects out there.</p><p>There are several open source projects providing this functionality, but if we were to use anything other than Miss.js
+it would be <a href="http://bootstraptour.com">Bootstrap Tour</a>. This project provides far more options than we ever will, 
+as well as a very nice API. We highly recommend this project for anyone needing more options than what we offer 
+(though we&#39;re open to suggestions) or anyone making heavy use of Bootstrap.</p><h2 id="contributing">Contributing</h2>
+<ol>
+<li>Fork it</li>
+<li>Create your feature branch (git checkout -b my-new-feature)</li>
+<li>Commit your changes (git commit -am &#39;Added some feature&#39;)</li>
+<li>Push to the branch (git push origin my-new-feature)</li>
+<li>Create new Pull Request</li>
+</ol>
+<hr><p>author: Andrew Carpenter, on behalf of the <a href="http://www.musocrat.com">musocrat</a> team</p>
+      </div>
+    </div>
+    <div id='footer'>
+  June 09, 14 00:14:39 by
+  <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
+    Codo
+  </a>
+  2.0.9
+  &#10034;
+  Press H to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/netzpirat' target='_parent'>@netzpirat</a>
+  &#10034;
+  <a href='http://twitter.com/_inossidabile' target='_parent'>@_inossidabile</a>
+</div>
+<iframe id='search_frame'></iframe>
+<div id='fuzzySearch'>
+  <input type='text'>
+  <ol></ol>
+</div>
+<div id='help'>
+  <p>
+    Quickly fuzzy find classes, mixins, methods, file:
+  </p>
+  <ul>
+    <li>
+      <span>T</span>
+      Open fuzzy finder dialog
+    </li>
+  </ul>
+  <p>
+    Control the navigation frame:
+  </p>
+  <ul>
+    <li>
+      <span>L</span>
+      Toggle list view
+    </li>
+    <li>
+      <span>C</span>
+      Show class list
+    </li>
+    <li>
+      <span>I</span>
+      Show mixin list
+    </li>
+    <li>
+      <span>F</span>
+      Show file list
+    </li>
+    <li>
+      <span>M</span>
+      Show method list
+    </li>
+    <li>
+      <span>E</span>
+      Show extras list
+    </li>
+  </ul>
+  <p>
+    You can focus and blur the search input:
+  </p>
+  <ul>
+    <li>
+      <span>S</span>
+      Focus search input
+    </li>
+    <li>
+      <span>Esc</span>
+      Blur search input
+    </li>
+  </ul>
+</div>
+  </body>
+</html>
