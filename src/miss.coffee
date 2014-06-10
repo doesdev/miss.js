@@ -26,8 +26,7 @@
             miss.missies.push(new Miss(el, i = i + 1, opts, title, msg)) unless !(title && msg)
       sortMissies()
       bindHover()
-      miss.on()
-      miss.missies[0].on()
+      missShouldShow()
 
   # Constructor
   class Miss
@@ -177,6 +176,12 @@
     for attr of objB
       objA[attr] = objB[attr]
     return objA
+
+  normalizeJSON = (data, keyname) ->
+    for obj of data
+      continue unless data.hasOwnProperty(obj)
+      if typeof data[obj] == "object" then return normalizeJSON(data[obj], keyname)
+      else return data[obj] if obj == keyname
 
   colorConvert = (hex) ->
     red: parseInt((prepHex(hex)).substring(0, 2), 16)
@@ -342,6 +347,28 @@
       current.missie.off()
       miss.missies[miss.missies.length - 1].on()
 
+  # Validate that miss should show
+  missShouldShow = () ->
+    if miss.global.check_url then checkUrl()
+    else miss.on(null, true) if miss.global.show_on_load
+
+  checkUrl = () ->
+    opts = miss.global
+    processCheck = () ->
+      if xhr.readyState == 4
+        if (status = xhr.status) == 200 || status == 0 then actOnCheck(JSON.parse(xhr.responseText))
+        else console.error('miss: check_url not returning expected results')
+
+    xhr = new XMLHttpRequest()
+    xhr.onreadystatechange = processCheck
+    xhr.open(opts.check_method, miss.global.check_url, true)
+    xhr.send()
+
+  actOnCheck = (data) ->
+    key = miss.global.check_keyname
+    show = normalizeJSON(data, key)
+    miss.on(null, true) if show
+
   # Resize event handlers
   resize = () ->
     missie.resize() for missie in miss.missies
@@ -370,8 +397,9 @@
     missie.el.addEventListener('mouseleave', missie.bindOff, false)
 
   # Plugin states
-  miss.on = (alone = null) ->
+  miss.on = (alone = null, start = null) ->
     backdrop(true, alone)
+    miss.missies[0].on() if start
 
   miss.off = () ->
     missie.off() for missie in miss.missies
@@ -394,6 +422,10 @@
   miss.settings = (set) ->
     miss.global = extend(
       theme: null
+      check_url: null
+      check_method: 'GET'
+      check_keyname: null
+      show_on_load: true
       trigger_el: null
       key_modifier: null # 'alt', 'ctrl', 'shift', 'cmd'
       key_on: null

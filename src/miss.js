@@ -3,7 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   (function(document) {
-    var Miss, backdrop, backdropCanvas, bindHover, colorConvert, coords, extend, gravity, lonelyMissieBind, message, miss, navWithKeys, pageNumbers, prepHex, resize, showHideEl, sortMissies, testEl;
+    var Miss, actOnCheck, backdrop, backdropCanvas, bindHover, checkUrl, colorConvert, coords, extend, gravity, lonelyMissieBind, message, miss, missShouldShow, navWithKeys, normalizeJSON, pageNumbers, prepHex, resize, showHideEl, sortMissies, testEl;
     miss = function(misset) {
       var defaults, el, i, k, msg, opts, setDefaults, title, type, v, _i, _len, _ref, _ref1;
       miss.missies = miss.missies || [];
@@ -45,8 +45,7 @@
         }
         sortMissies();
         bindHover();
-        miss.on();
-        return miss.missies[0].on();
+        return missShouldShow();
       }
     };
     Miss = (function() {
@@ -266,6 +265,21 @@
         objA[attr] = objB[attr];
       }
       return objA;
+    };
+    normalizeJSON = function(data, keyname) {
+      var obj;
+      for (obj in data) {
+        if (!data.hasOwnProperty(obj)) {
+          continue;
+        }
+        if (typeof data[obj] === "object") {
+          return normalizeJSON(data[obj], keyname);
+        } else {
+          if (obj === keyname) {
+            return data[obj];
+          }
+        }
+      }
     };
     colorConvert = function(hex) {
       return {
@@ -549,6 +563,41 @@
         return miss.missies[miss.missies.length - 1].on();
       }
     };
+    missShouldShow = function() {
+      if (miss.global.check_url) {
+        return checkUrl();
+      } else {
+        if (miss.global.show_on_load) {
+          return miss.on(null, true);
+        }
+      }
+    };
+    checkUrl = function() {
+      var opts, processCheck, xhr;
+      opts = miss.global;
+      processCheck = function() {
+        var status;
+        if (xhr.readyState === 4) {
+          if ((status = xhr.status) === 200 || status === 0) {
+            return actOnCheck(JSON.parse(xhr.responseText));
+          } else {
+            return console.error('miss: check_url not returning expected results');
+          }
+        }
+      };
+      xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = processCheck;
+      xhr.open(opts.check_method, miss.global.check_url, true);
+      return xhr.send();
+    };
+    actOnCheck = function(data) {
+      var key, show;
+      key = miss.global.check_keyname;
+      show = normalizeJSON(data, key);
+      if (show) {
+        return miss.on(null, true);
+      }
+    };
     resize = function() {
       var missie, _i, _len, _ref, _results;
       _ref = miss.missies;
@@ -606,11 +655,17 @@
       missie.el.addEventListener('mouseenter', missie.bindOn, false);
       return missie.el.addEventListener('mouseleave', missie.bindOff, false);
     };
-    miss.on = function(alone) {
+    miss.on = function(alone, start) {
       if (alone == null) {
         alone = null;
       }
-      return backdrop(true, alone);
+      if (start == null) {
+        start = null;
+      }
+      backdrop(true, alone);
+      if (start) {
+        return miss.missies[0].on();
+      }
     };
     miss.off = function() {
       var missie, _i, _len, _ref;
@@ -646,6 +701,10 @@
     miss.settings = function(set) {
       return miss.global = extend({
         theme: null,
+        check_url: null,
+        check_method: 'GET',
+        check_keyname: null,
+        show_on_load: true,
         trigger_el: null,
         key_modifier: null,
         key_on: null,
