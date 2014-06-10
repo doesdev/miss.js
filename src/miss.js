@@ -704,7 +704,7 @@
         check_url: null,
         check_method: 'GET',
         check_keyname: null,
-        show_on_load: true,
+        show_on_load: false,
         trigger_el: null,
         key_modifier: null,
         key_on: null,
