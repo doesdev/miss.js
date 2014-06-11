@@ -359,6 +359,14 @@
     unless window.localStorage["#{miss.site}:missDisable"] && !miss.global.always_show
       if miss.global.check_url then checkUrl()
       else miss.on(null, true) if miss.global.show_on_load
+    setTriggers()
+
+  bindTriggers = () ->
+    miss.on(null, true)
+
+  setTriggers = () ->
+    els = miss.global.trigger_el
+    el.addEventListener('click', bindTriggers, false) for el in document.querySelectorAll.call(document, els)
 
   checkUrl = () ->
     opts = miss.global
@@ -424,6 +432,8 @@
         missie.el.removeEventListener('mouseleave', missie.bindOff, false)
       missie.box.parentNode.removeChild(missie.box) if missie.box
     test = document.getElementById('miss-size-test')
+    els = miss.global.trigger_el
+    el.removeEventListener('click', bindTriggers, false) for el in document.querySelectorAll.call(document, els)
     test.parentNode.removeChild(test)
     bd = document.getElementById('miss_bd')
     bd.parentNode.removeChild(bd)

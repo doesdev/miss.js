@@ -3,7 +3,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   (function(document) {
-    var Miss, actOnCheck, backdrop, backdropCanvas, bindHover, checkUrl, colorConvert, coords, extend, gravity, lonelyMissieBind, message, miss, missShouldShow, navWithKeys, normalizeJSON, pageNumbers, prepHex, resize, showHideEl, sortMissies, testEl;
+    var Miss, actOnCheck, backdrop, backdropCanvas, bindHover, bindTriggers, checkUrl, colorConvert, coords, extend, gravity, lonelyMissieBind, message, miss, missShouldShow, navWithKeys, normalizeJSON, pageNumbers, prepHex, resize, setTriggers, showHideEl, sortMissies, testEl;
     miss = function(misset) {
       var defaults, el, i, k, msg, opts, setDefaults, title, type, v, _i, _len, _ref, _ref1;
       miss.site = window.location.host || window.location.hostname;
@@ -568,13 +568,28 @@
     missShouldShow = function() {
       if (!(window.localStorage["" + miss.site + ":missDisable"] && !miss.global.always_show)) {
         if (miss.global.check_url) {
-          return checkUrl();
+          checkUrl();
         } else {
           if (miss.global.show_on_load) {
-            return miss.on(null, true);
+            miss.on(null, true);
           }
         }
       }
+      return setTriggers();
+    };
+    bindTriggers = function() {
+      return miss.on(null, true);
+    };
+    setTriggers = function() {
+      var el, els, _i, _len, _ref, _results;
+      els = miss.global.trigger_el;
+      _ref = document.querySelectorAll.call(document, els);
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        el = _ref[_i];
+        _results.push(el.addEventListener('click', bindTriggers, false));
+      }
+      return _results;
     };
     checkUrl = function() {
       var opts, processCheck, xhr;
@@ -686,7 +701,7 @@
     };
     miss.destroy = (function(_this) {
       return function() {
-        var bd, missie, test, _i, _len, _ref;
+        var bd, el, els, missie, test, _i, _j, _len, _len1, _ref, _ref1;
         _ref = miss.missies;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           missie = _ref[_i];
@@ -699,6 +714,12 @@
           }
         }
         test = document.getElementById('miss-size-test');
+        els = miss.global.trigger_el;
+        _ref1 = document.querySelectorAll.call(document, els);
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          el = _ref1[_j];
+          el.removeEventListener('click', bindTriggers, false);
+        }
         test.parentNode.removeChild(test);
         bd = document.getElementById('miss_bd');
         bd.parentNode.removeChild(bd);
