@@ -77,7 +77,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-coffee");
     grunt.loadNpmTasks("grunt-codo");
-    grunt.registerTask("default", ["coffee", "jshint", "uglify", "codo"]);
+    grunt.registerTask("default", ["coffee", "jshint", "uglify"]);
+    grunt.registerTask("docs", ["codo"]);
     grunt.registerTask("travis", ["jshint"]);
 
 };
