@@ -13,22 +13,78 @@
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
     </head>
     <body>
+    <div id="pagewrap">
+        <img id="logo" src="img/miss.js-logo-200.png"/>
+        <div id="pageborder-outer">
+            <div id="pageborder-inner">
 
-        <p>Hello world! This is HTML5 Boilerplate.</p>
+                <h1 id="heading">Miss.js</h1>
+                <br><br>
+                <h2 id="slogan">Make it simple stupid.</h2>
+                <br><br>
+                <p id="words">
+                    Miss.js is a javascript plugin that empowers you to make complex apps simple for users to grasp.
+                    This tool helps you guide users through your app with a simple walkthrough and provide ongoing
+                    assistance through per element popovers. The ultimate goal is getting users engaged with your
+                    app and maximizing your conversion rate.
+                    <br><br>
+                    Miss.js is dependency free and provides a simple API for easy implementation.
+                </p>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.0.min.js"><\/script>')</script>
+            </div>
+        </div>
+    </div>
+
+        <script src="js/vendor/jquery-1.11.0.min.js"></script>
 
         <script src="js/main.js"></script>
-
+        <script src="js/vendor/miss.min.js"></script>
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
             (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
             function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
             e=o.createElement(i);r=o.getElementsByTagName(i)[0];
-            e.src='//www.google-analytics.com/analytics.js';
+            e.src='https://www.google-analytics.com/analytics.js';
             r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
             ga('create','UA-XXXXX-X');ga('send','pageview');
+        </script>
+
+        <script>
+            miss({
+                settings: {
+                    key_modifier: 'alt',
+                    theme: 'custom',
+                    always_show: true,
+                    highlight_color: '#dc4ca5'
+                },
+                elements: {
+                    welcome: {
+                        title: 'Welcome to Miss.js',
+                        msg: "We're going to take you on a really small tour, due to our lack of content. " +
+                                "Maybe we'll add some content and give you a more advanced demo to check out. " +
+                                "Until then, enjoy this brief demo."
+                    },
+                    "#logo": {
+                        order: 1,
+                        title: 'Miss.js Awesome Logo',
+                        msg: "This is our completely original logo. No infringement here at all ;)"
+                    },
+                    "#heading": {
+                        order: 2,
+                        title: 'Our Name',
+                        msg: "This is our javascript plugin's name. Isn't it a cool name. It is."
+                    },
+                    "#slogan": {
+                        order: 3,
+                        title: 'Our Slogan',
+                        msg: "Here we have our clever slogan. It's kind of like keep it simple stupid, but with make."
+                    },
+                    exit: {
+                        title: 'All Done',
+                        msg: "That's it. Feel free to fork the project, submit issues, star it, share it, enjoy it."
+                    }
+                }
+            })
         </script>
     </body>
 </html>
