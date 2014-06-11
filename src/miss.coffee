@@ -67,7 +67,7 @@
       # navigation
       nav = '<div class="btn-group">
               <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button>
-              <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button></div>
+              <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button>
               <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>'
       page_num = '<p class="miss-step-num text-center"></p>'
       # apply (minimal) styling
@@ -356,7 +356,7 @@
 
   # Validate that miss should show
   missShouldShow = () ->
-    unless window.localStorage["#{miss.site}:missDisable"] && !miss.global.always_show
+    if !window.localStorage["#{miss.site}:missDisable"] || miss.global.always_show
       if miss.global.check_url then checkUrl()
       else miss.on(null, true) if miss.global.show_on_load
     setTriggers()
