@@ -2,6 +2,7 @@
 
   # Initializer
   miss = (misset) ->
+    miss.site = window.location.host || window.location.hostname
     miss.missies = miss.missies || []
     miss.settings(misset.settings || null) unless miss.global
     setDefaults = -> return {
@@ -43,28 +44,32 @@
       # Functions called on initialize
       @buildBox()
 
+    # Create elements with data
     buildBox: () =>
-      # create elements with data
+      # popover wrapper
       box = document.createElement('div')
       box.id = "miss_#{@order}"
       box.className = 'miss-box popover'
       box.style.position = 'fixed'
       box.style.zIndex = @opts.z_index + 1
+      # title bar
       title_box = document.createElement('div')
       title_box.className = 'miss-titlebar popover-title'
       close = '<span style="float:right;cursor:pointer;" onclick="miss.off()"
                class="close" aria-hidden="true">&times;</span>'
       title_box.innerHTML = @title + close
+      # content area
       msg_box = document.createElement('div')
       msg_box.className = 'miss-msg popover-content'
       msg_box.innerHTML = @msg
       nav_box = document.createElement('div')
       nav_box.className = 'miss-nav'
-      nav_buttons = '<div class="btn-group">
-                      <button class="btn btn-default" onclick="miss.previous();">prev</button>
-                      <button class="btn btn-default" onclick="miss.next();">next</button></div>'
-      nav_numbers = '<p class="miss-step-num pull-right"></p>'
-      nav_box.innerHTML = nav_buttons + nav_numbers
+      # navigation
+      nav = '<div class="btn-group">
+              <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button>
+              <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button></div>
+              <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>'
+      page_num = '<p class="miss-step-num text-center"></p>'
       # apply (minimal) styling
       unless miss.global.theme
         rgba = colorConvert(@opts.titlebar_color)
@@ -77,7 +82,9 @@
         title_box.style.padding = '8px'
         nav_box.style.textAlign = 'center'
         msg_box.style.padding = '8px'
+        page_num = page_num.replace('>', ' style="text-align:center;">')
       # add them to DOM
+      nav_box.innerHTML = nav + page_num
       box.appendChild(title_box)
       msg_box.appendChild(nav_box)
       box.appendChild(msg_box)
@@ -330,7 +337,7 @@
   miss.next = () ->
     if current = miss.current()
       current.missie.off()
-      if miss.missies[current.index + 1] then return miss.missies[current.index + 1].on() else return miss.off()
+      if miss.missies[current.index + 1] then return miss.missies[current.index + 1].on() else return miss.done()
 
   miss.previous = () ->
     if current = miss.current()
@@ -349,8 +356,9 @@
 
   # Validate that miss should show
   missShouldShow = () ->
-    if miss.global.check_url then checkUrl()
-    else miss.on(null, true) if miss.global.show_on_load
+    unless window.localStorage["#{miss.site}:missDisable"] && !miss.global.always_show
+      if miss.global.check_url then checkUrl()
+      else miss.on(null, true) if miss.global.show_on_load
 
   checkUrl = () ->
     opts = miss.global
@@ -405,6 +413,10 @@
     missie.off() for missie in miss.missies
     backdrop(false)
 
+  miss.done = () ->
+    window.localStorage.setItem("#{miss.site}:missDisable", true)
+    miss.off()
+
   miss.destroy = () =>
     for missie in miss.missies
       if missie.el
@@ -425,7 +437,8 @@
       check_url: null
       check_method: 'GET'
       check_keyname: null
-      show_on_load: false
+      show_on_load: true
+      always_show: null
       trigger_el: null
       key_modifier: null # 'alt', 'ctrl', 'shift', 'cmd'
       key_on: null
@@ -440,6 +453,9 @@
       highlight: true
       highlight_width: 3
       highlight_color: '#fff'
+      btn_prev_text: '&#8592 prev'
+      btn_next_text: 'next &#8594'
+      btn_done_text: 'done'
     , set)
 
   this.miss = miss

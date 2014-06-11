@@ -6,6 +6,7 @@
       _this = this;
     miss = function(misset) {
       var defaults, el, i, k, msg, opts, setDefaults, title, type, v, _i, _len, _ref, _ref1;
+      miss.site = window.location.host || window.location.hostname;
       miss.missies = miss.missies || [];
       if (!miss.global) {
         miss.settings(misset.settings || null);
@@ -79,7 +80,7 @@
       }
 
       Miss.prototype.buildBox = function() {
-        var box, close, msg_box, nav_box, nav_buttons, nav_numbers, rgba, title_box;
+        var box, close, msg_box, nav, nav_box, page_num, rgba, title_box;
         box = document.createElement('div');
         box.id = "miss_" + this.order;
         box.className = 'miss-box popover';
@@ -95,11 +96,11 @@
         msg_box.innerHTML = this.msg;
         nav_box = document.createElement('div');
         nav_box.className = 'miss-nav';
-        nav_buttons = '<div class="btn-group">\
-                      <button class="btn btn-default" onclick="miss.previous();">prev</button>\
-                      <button class="btn btn-default" onclick="miss.next();">next</button></div>';
-        nav_numbers = '<p class="miss-step-num pull-right"></p>';
-        nav_box.innerHTML = nav_buttons + nav_numbers;
+        nav = '<div class="btn-group">\
+              <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button>\
+              <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button></div>\
+              <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>';
+        page_num = '<p class="miss-step-num text-center"></p>';
         if (!miss.global.theme) {
           rgba = colorConvert(this.opts.titlebar_color);
           box.style.backgroundColor = this.opts.background_color;
@@ -111,7 +112,9 @@
           title_box.style.padding = '8px';
           nav_box.style.textAlign = 'center';
           msg_box.style.padding = '8px';
+          page_num = page_num.replace('>', ' style="text-align:center;">');
         }
+        nav_box.innerHTML = nav + page_num;
         box.appendChild(title_box);
         msg_box.appendChild(nav_box);
         box.appendChild(msg_box);
@@ -537,7 +540,7 @@
         if (miss.missies[current.index + 1]) {
           return miss.missies[current.index + 1].on();
         } else {
-          return miss.off();
+          return miss.done();
         }
       }
     };
@@ -567,11 +570,13 @@
       }
     };
     missShouldShow = function() {
-      if (miss.global.check_url) {
-        return checkUrl();
-      } else {
-        if (miss.global.show_on_load) {
-          return miss.on(null, true);
+      if (!(window.localStorage["" + miss.site + ":missDisable"] && !miss.global.always_show)) {
+        if (miss.global.check_url) {
+          return checkUrl();
+        } else {
+          if (miss.global.show_on_load) {
+            return miss.on(null, true);
+          }
         }
       }
     };
@@ -679,6 +684,10 @@
       }
       return backdrop(false);
     };
+    miss.done = function() {
+      window.localStorage.setItem("" + miss.site + ":missDisable", true);
+      return miss.off();
+    };
     miss.destroy = function() {
       var bd, missie, test, _i, _len, _ref;
       _ref = miss.missies;
@@ -705,7 +714,8 @@
         check_url: null,
         check_method: 'GET',
         check_keyname: null,
-        show_on_load: false,
+        show_on_load: true,
+        always_show: null,
         trigger_el: null,
         key_modifier: null,
         key_on: null,
@@ -719,7 +729,10 @@
         welcome_msg: null,
         highlight: true,
         highlight_width: 3,
-        highlight_color: '#fff'
+        highlight_color: '#fff',
+        btn_prev_text: '&#8592 prev',
+        btn_next_text: 'next &#8594',
+        btn_done_text: 'done'
       }, set);
     };
     return this.miss = miss;
