@@ -3,9 +3,10 @@
 
 ###Make it simple stupid.
 
-Miss.js empowers you to make complex apps simple for users to grasp. This tool helps you guide users through your app 
-with a simple walkthrough and provide ongoing assistance through per element popovers. The ultimate goal is getting 
-users engaged with your app and maximizing your conversion rate. 
+Miss.js is a javascript plugin that empowers you to make complex apps simple for users to grasp. 
+This tool helps you guide users through your app with a simple walkthrough and provide ongoing 
+assistance through per element popovers. The ultimate goal is getting users engaged with your app 
+and maximizing your conversion rate. 
 
 Miss.js is dependency free and provides a simple API for easy implementation. 
 
@@ -90,7 +91,8 @@ Features
 
 Demos
 ----
-Demo page is under construction now. We will update the moment it is ready.
+We have a super simple demo on our [github page](http://musocrat.github.io/miss/). 
+Expect a more through demo in the near future.
 
 Docs
 ----
