@@ -1,4 +1,4 @@
-![alt text](http://musocrat.github.io/miss/img/miss.js-logo-100.png "Miss.js Logo") Miss.js [![Build Status](https://travis-ci.org/musocrat/miss.png)](https://travis-ci.org/musocrat/miss)
+![alt text](http://musocrat.github.io/miss.js/img/miss.js-logo-100.png "Miss.js Logo") Miss.js [![Build Status](https://travis-ci.org/musocrat/miss.js.png)](https://travis-ci.org/musocrat/miss.js)
 ======================
 
 ###Make it simple stupid.
@@ -91,7 +91,7 @@ Features
 
 Demos
 ----
-We have a super simple demo on our [github page](http://musocrat.github.io/miss/). 
+We have a super simple demo on our [github page](http://musocrat.github.io/miss.js/). 
 Expect a more through demo in the near future.
 
 Docs
