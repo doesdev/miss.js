@@ -105,7 +105,7 @@
         @box.style.visibility = 'hidden'
         showHideEl(@box, true)
       # set box dimensions
-      @box.style.maxWidth = "30%"
+      @box.style.maxWidth = "40%"
       @box.style.maxHeight = "60%"
       # set box gravity
       gravitate = if @el then gravity(coord, @box.offsetHeight, @box.offsetWidth) else {}
@@ -265,8 +265,6 @@
 
   # Gravitate to center
   gravity = (coords, height, width) ->
-    ary_x = []
-    ary_y = []
     center =
       x: testEl().height / 2
       y: testEl().width / 2
@@ -279,49 +277,44 @@
     mapping_x =
       plane: 'x',
       metric: height,
+      mstr: 'height',
       array: map_x = [],
+      optimal: optimal_x = [],
+      diffs: ary_x = [],
       setup: {top: null, middle: [el_center.x, 'top'], bottom: null}
     mapping_y =
       plane: 'y',
       metric: width,
+      mstr: 'width',
       array: map_y = [],
+      optimal: optimal_y = [],
+      diffs: ary_y = [],
       setup: {left: null, middle: [el_center.y, 'left'], right: null}
     for args in [mapping_x, mapping_y]
       for pos, arg of args.setup
         if arg then add = arg[0]; loc = arg[1] else add = 0; loc = pos
-        diff = {}
+        diff = {}; val = {}
         diff[Object.keys(args.setup)[0]] = Math.abs(coords[loc] - box_center[args.plane] - center[args.plane] + add)
         diff[Object.keys(args.setup)[1]] = Math.abs(coords[loc] - center[args.plane] + add)
         diff[Object.keys(args.setup)[2]] = Math.abs(coords[loc] + box_center[args.plane] - center[args.plane] + add)
-        val = {}
         val[Object.keys(args.setup)[0]] = coords[loc] - args.metric + add
         val[Object.keys(args.setup)[1]] = coords[loc] - box_center[args.plane] + add
         val[Object.keys(args.setup)[2]] = coords[loc] + add
         position = pos
         args.array.push({diff, val, position})
-
-    ary_x.push(xv) for xk, xv of v.diff for k, v of map_x
-    ary_y.push(yv) for yk, yv of v.diff for k, v of map_y
-    optimal_x = ary_x.sort((a,b) -> a - b)[0]
-    optimal_y = ary_y.sort((a,b) -> a - b)[0]
-    for k, v of map_x
-      for xk, xv of v.diff
-        if xv == optimal_x
-          val = v.val[xk]
-          overlap = (val < coords.top + coords.height && val + height > coords.top)
-          x = val: val, position: "#{v.position}_#{xk}", overlap: overlap; break_loop = true; break
-      break if break_loop
-
-    for i in [0..8]
-      break_loop = false
-      for k, v of map_y
-        for yk, yv of v.diff
-          val = v.val[yk]
-          if yv == ary_y[i] && !(x.overlap && val < coords.left + coords.width && val + width > coords.left)
-            y = val: v.val[yk], position: "#{v.position}_#{yk}"; break_loop = true; break
-        break if break_loop
-      break if break_loop
-
+      args.diffs.push(value) for key, value of v.diff for k, v of args.array
+      args.diffs.sort((a,b) -> a - b)
+      pos_ref = args.setup.middle[1]
+      for i in [0..8]
+        break_loop = false
+        for k, v of args.array
+          for dk, dv of v.diff
+            if dv == args.diffs[i] && v.val[dk] >= 0
+              overlap = ((val = v.val[dk]) < coords[pos_ref] + coords[args.mstr] && val + args.metric > coords[pos_ref])
+              args.optimal.push({val: val, diff: dv, position: "#{v.position}_#{dk}", overlap: overlap})
+              break_loop = true; break
+          break if break_loop
+    break for i in [0..8] when (x = optimal_x[i]) && (y = optimal_y[i]) && !(x.overlap && y.overlap)
     x: x.val
     y: y.val
 

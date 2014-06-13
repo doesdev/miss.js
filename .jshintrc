@@ -10,5 +10,6 @@
 	"smarttabs": true,
 	"trailing": true,
 	"node": true,
+	"loopfunc": true,
     "multistr": true
 }
