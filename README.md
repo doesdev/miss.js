@@ -91,7 +91,7 @@ Features
 
 Demos
 ----
-We have a super simple demo on our [github page](http://musocrat.github.io/miss/). 
+We have a super simple demo on our [github page](http://musocrat.github.io/miss.js/). 
 Expect a more through demo in the near future.
 
 Docs
