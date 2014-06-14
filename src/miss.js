@@ -191,8 +191,7 @@
         this.border.style.left = "" + (coord.left - hl_border) + "px";
         this.border.style.width = "" + (coord.width + hl_border) + "px";
         this.border.style.height = "" + (coord.height + hl_border) + "px";
-        showHideEl(this.border, this.box.miss_visible || false);
-        return miss.bd.appendChild(this.border);
+        return showHideEl(this.border, this.box.miss_visible || false);
       };
 
       Miss.prototype.canvasExtract = function() {

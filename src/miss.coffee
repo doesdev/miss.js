@@ -1,37 +1,62 @@
 ((document) ->
 
-  # Initializer
+  # @mixin
+  # Initialize the instances of each Miss object (hereto referred to as a missie)
   miss = (misset) ->
+    # @example
+    #   miss({
+    #    settings: {key_modifier: 'alt'},
+    #    elements: {
+    #      welcome: {
+    #        title: 'the title',
+    #        msg: 'the message'
+    #      },
+    #      "#some-el": {
+    #        title: 'title',
+    #        msg: 'message'
+    #      }
+    #    }
+    #  });
     miss.site = window.location.host || window.location.hostname
+    # this (miss.missies) is our instance storage array. all miss instances (missies) are pushed into this.
     miss.missies = miss.missies || []
     miss.settings(misset.settings || null) unless miss.global
+    # per instance defaults
     setDefaults = -> return {
       order: 'series'
       background_color: '#f5f5f5'
       titlebar_color: '#939393'
       font_color: '#000'}
+    # initialize backdrop
     backdrop(false)
 
+    # loop through all miss elements and initialize the Miss instance for that element with options
     if misset.elements
       miss.off()
       i = 0
+      # loop over miss.elements
       for k, v of misset.elements
         defaults = setDefaults()
+        # merge global settings, instance defaults, and instance settings
         opts = extend( extend(defaults, v), miss.global)
+        # initialize welcome and exit instances
         if (type = k.toLowerCase()) == 'welcome' || type == 'exit'
           msg = message(opts.msg)
           miss.missies.push(new Miss(type, i = i + 1, opts, opts.title, msg)) unless !(opts.title && msg)
         else
+          # initialize element / selector based instances
           for el in document.querySelectorAll.call(document, k)
             title = opts.title || el.dataset.missTitle || null
             msg = message(opts.msg) || message(el.dataset.missMsg) || null
             miss.missies.push(new Miss(el, i = i + 1, opts, title, msg)) unless !(title && msg)
+      # functions to call once all missies are loaded
       sortMissies()
       bindHover()
       missShouldShow()
 
-  # Constructor
+  # Miss class encapsulates the tutorial / walkthrough step object instances (missies) and their methods.
   class Miss
+    # Initialize instance variables and call subsequent methods.
     constructor: (el, i, opts, title, msg) ->
       switch el
         when 'welcome' then @order = 0; @el = null
@@ -41,12 +66,11 @@
       @title = title
       @msg = msg
       @index = i
-
-      # Functions called on initialize
+      # call subsequent methods
       @buildBox()
       @buildBorder()
 
-    # Create elements with data
+    # Create walkthrough step 'box' (popover element) and fill it with content.
     buildBox: () =>
       # popover wrapper
       box = document.createElement('div')
@@ -76,7 +100,7 @@
               <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button>
               <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>'
       page_num = '<p class="miss-step-num text-center"></p>'
-      # apply (minimal) styling
+      # apply (minimal) styling if no theme set
       unless miss.global.theme
         rgba = colorConvert(@opts.titlebar_color)
         box.style.backgroundColor = @opts.background_color
@@ -89,16 +113,19 @@
         nav_box.style.textAlign = 'center'
         msg_box.style.padding = '8px'
         page_num = page_num.replace('>', ' style="text-align:center;">')
-      # add them to DOM
+      # add it all to the DOM
       nav_box.innerHTML = nav_btns + page_num
       box.appendChild(title_box)
       msg_box.appendChild(nav_box)
       box.appendChild(msg_box)
       showHideEl(box, false)
       document.body.appendChild(box)
+      # set elements to instance variables
       @box = box; @nav = nav_box
+      # call subsequent methods
       @boxSizing()
 
+    # Set the box (popover element) size and position.
     boxSizing: () =>
       coord = coords(@el) if @el
       screen = testEl()
@@ -130,6 +157,7 @@
         @box.style.visibility = ''
         showHideEl(@box, false)
 
+    # Create a border to highlight the target element.
     buildBorder: () =>
       return unless @opts.highlight && @el
       @border ?= document.getElementById("miss_hl_#{@index}") || document.createElement('div')
@@ -139,6 +167,7 @@
       showHideEl(@border, @box.miss_visible || false)
       miss.bd.appendChild(@border)
 
+    # Set position of the target element's border and show if box is visible.
     highlight: () =>
       return unless @opts.highlight && @el
       coord = coords(@el)
@@ -148,8 +177,8 @@
       @border.style.width = "#{coord.width + hl_border}px"
       @border.style.height = "#{coord.height + hl_border}px"
       showHideEl(@border, @box.miss_visible || false)
-      miss.bd.appendChild(@border)
 
+    # Extract the target element's area from the backdrop to highlight the target.
     canvasExtract: () =>
       return unless @opts.highlight && @el
       coord = coords(@el)
@@ -162,11 +191,13 @@
       ctx.fillRect(coord.left, coord.top, coord.width + hl_border, coord.height + hl_border)
       ctx.restore()
 
+    # Actions to take / methods to call to adjust sizing and position.
     resize: () =>
       @boxSizing()
       @highlight()
       @canvasExtract() if @box.miss_visible
 
+    # Method to be bound to mouseenter event listener. Turns instance on if modifier key is depressed.
     bindOn: (event) =>
       switch @opts.key_modifier.toLowerCase()
         when 'alt' then key = 'altKey'
@@ -176,9 +207,11 @@
         else return
       @on(true) if event[key]
 
+    # Method to be bound to mouseout event listener. Turns instance off.
     bindOff: () =>
       @off(true)
 
+    # Turns instance on (makes it visible).
     on: (alone = null) =>
       miss.on() if miss.bd.v && !alone
       miss.off() if alone
@@ -190,6 +223,7 @@
       pageNumbers(@box)
       @alone = alone
 
+    # Turns instance off (hides it).
     off: (alone = null) =>
       backdropCanvas(alone)
       showHideEl(@border, false) if @border

@@ -35,7 +35,7 @@
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Constructor</p>
+  <p>Miss class encapsulates the tutorial / walkthrough step object instances (missies) and their methods.</p>
 </div>
 <div class='tags'>
 </div>
@@ -51,7 +51,7 @@
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
-      Create elements with data 
+      Create walkthrough step &#39;box&#39; (popover element) and fill it with content. 
     </span>
   </li>
   <li>
@@ -64,6 +64,20 @@
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
+      Set the box (popover element) size and position. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#buildBorder-dynamic'>
+        #
+(void)
+<b>buildBorder</b><span>()</span>
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Create a border to highlight the target element. 
     </span>
   </li>
   <li>
@@ -76,6 +90,20 @@
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
+      Set position of the target element&#39;s border and show if box is visible. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#canvasExtract-dynamic'>
+        #
+(void)
+<b>canvasExtract</b><span>()</span>
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Extract the target element&#39;s area from the backdrop to highlight the target. 
     </span>
   </li>
   <li>
@@ -88,6 +116,7 @@
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
+      Actions to take / methods to call to adjust sizing and position. 
     </span>
   </li>
   <li>
@@ -100,6 +129,7 @@
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
+      Method to be bound to mouseenter event listener. 
     </span>
   </li>
   <li>
@@ -112,6 +142,7 @@
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
+      Method to be bound to mouseout event listener. 
     </span>
   </li>
   <li>
@@ -124,6 +155,7 @@
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
+      Turns instance on (makes it visible). 
     </span>
   </li>
   <li>
@@ -136,6 +168,7 @@
     </span>
     <span class='bound note title'>Bound</span>
     <span class='desc'>
+      Turns instance off (hides it). 
     </span>
   </li>
 </ul>
@@ -148,7 +181,11 @@
 <b>constructor</b><span>(el, i, opts, title, msg)</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Initialize instance variables and call subsequent methods.</p>
+</div>
+<div class='tags'>
+</div>
   </div>
 </div>
       <h2>Instance Method Details</h2>
@@ -162,7 +199,7 @@
       <br>
     </p>
     <div class='docstring'>
-  <p>Create elements with data</p>
+  <p>Create walkthrough step &#39;box&#39; (popover element) and fill it with content.</p>
 </div>
 <div class='tags'>
 </div>
@@ -175,7 +212,25 @@
       <span class='bound note'>Bound</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Set the box (popover element) size and position.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='buildBorder-dynamic'>
+      #
+(void)
+<b>buildBorder</b><span>()</span>
+      <span class='bound note'>Bound</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Create a border to highlight the target element.</p>
+</div>
+<div class='tags'>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='highlight-dynamic'>
@@ -185,7 +240,25 @@
       <span class='bound note'>Bound</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Set position of the target element&#39;s border and show if box is visible.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='canvasExtract-dynamic'>
+      #
+(void)
+<b>canvasExtract</b><span>()</span>
+      <span class='bound note'>Bound</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Extract the target element&#39;s area from the backdrop to highlight the target.</p>
+</div>
+<div class='tags'>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='resize-dynamic'>
@@ -195,7 +268,11 @@
       <span class='bound note'>Bound</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Actions to take / methods to call to adjust sizing and position.</p>
+</div>
+<div class='tags'>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='bindOn-dynamic'>
@@ -205,7 +282,11 @@
       <span class='bound note'>Bound</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Method to be bound to mouseenter event listener. Turns instance on if modifier key is depressed.</p>
+</div>
+<div class='tags'>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='bindOff-dynamic'>
@@ -215,7 +296,11 @@
       <span class='bound note'>Bound</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Method to be bound to mouseout event listener. Turns instance off.</p>
+</div>
+<div class='tags'>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='on-dynamic'>
@@ -225,7 +310,11 @@
       <span class='bound note'>Bound</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Turns instance on (makes it visible).</p>
+</div>
+<div class='tags'>
+</div>
   </div>
   <div class='method_details'>
     <p class='signature' id='off-dynamic'>
@@ -235,12 +324,16 @@
       <span class='bound note'>Bound</span>
       <br>
     </p>
-    
+    <div class='docstring'>
+  <p>Turns instance off (hides it).</p>
+</div>
+<div class='tags'>
+</div>
   </div>
 </div>
     </div>
     <div id='footer'>
-  June 10, 14 22:33:21 by
+  June 14, 14 18:23:59 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>
