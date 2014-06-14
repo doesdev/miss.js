@@ -10,6 +10,7 @@
       background_color: '#f5f5f5'
       titlebar_color: '#939393'
       font_color: '#000'}
+    backdrop(false)
 
     if misset.elements
       miss.off()
@@ -43,6 +44,7 @@
 
       # Functions called on initialize
       @buildBox()
+      @buildBorder()
 
     # Create elements with data
     buildBox: () =>
@@ -119,31 +121,42 @@
         @box.style.visibility = ''
         showHideEl(@box, false)
 
+    buildBorder: () =>
+      return unless @opts.highlight && @el
+      @border ?= document.getElementById("miss_hl_#{@index}") || document.createElement('div')
+      @border.id = "miss_hl_#{@index}"
+      @border.style.position = "fixed"
+      @border.style.border = "#{@opts.highlight_width || 0}px solid #{@opts.highlight_color}" if @opts.highlight
+      showHideEl(@border, @box.miss_visible || false)
+      miss.bd.appendChild(@border)
+
     highlight: () =>
+      return unless @opts.highlight && @el
       coord = coords(@el)
       hl_border = if @opts.highlight then @opts.highlight_width else 0
-      hl = document.getElementById("miss_hl_#{@index}") || document.createElement('div')
-      hl.id = "miss_hl_#{@index}"
-      hl.style.position = "fixed"
-      hl.style.top = "#{coord.top - hl_border}px"
-      hl.style.left = "#{coord.left - hl_border}px"
-      hl.style.width = "#{coord.width + hl_border}px"
-      hl.style.height = "#{coord.height + hl_border}px"
-      hl.style.border = "#{hl_border}px solid #{@opts.highlight_color}" if @opts.highlight
-      miss.bd.appendChild(hl)
+      @border.style.top = "#{coord.top - hl_border}px"
+      @border.style.left = "#{coord.left - hl_border}px"
+      @border.style.width = "#{coord.width + hl_border}px"
+      @border.style.height = "#{coord.height + hl_border}px"
+      showHideEl(@border, @box.miss_visible || false)
+      miss.bd.appendChild(@border)
+
+    canvasExtract: () =>
+      return unless @opts.highlight && @el
+      coord = coords(@el)
+      hl_border = if @opts.highlight then @opts.highlight_width else 0
       ctx = document.getElementById('miss_bd_canvas').getContext('2d')
       ctx.save()
       ctx.globalAlpha = 1
       ctx.globalCompositeOperation = 'destination-out'
       ctx.beginPath()
       ctx.fillRect(coord.left, coord.top, coord.width + hl_border, coord.height + hl_border)
-      ctx.fill()
       ctx.restore()
 
     resize: () =>
       this.boxSizing()
-      backdropCanvas() unless @alone
-      @highlight() if @el
+      @highlight()
+      @canvasExtract() if @box.miss_visible
 
     bindOn: (event) =>
       switch @opts.key_modifier.toLowerCase()
@@ -158,17 +171,18 @@
       @off(true)
 
     on: (alone = null) =>
-      miss.on() if miss.bd.visible && !alone
+      miss.on() if miss.bd.v && !alone
       miss.off() if alone
-      @highlight() if @el
+      @highlight()
+      @canvasExtract()
+      showHideEl(@border, true) if @border
       showHideEl(@box, true, alone)
       pageNumbers(@box)
       @alone = alone
 
     off: (alone = null) =>
-      hl = document.getElementById("miss_hl_#{@index}")
-      hl.parentNode.removeChild(hl) if hl
       backdropCanvas(alone)
+      showHideEl(@border, false) if @border
       showHideEl(@box, false)
       miss.off() if alone
       @alone = null
@@ -290,6 +304,7 @@
       optimal: optimal_y = [],
       diffs: ary_y = [],
       setup: {left: null, middle: [el_center.y, 'left'], right: null}
+    sort = (a,b) -> a - b
     for args in [mapping_x, mapping_y]
       for pos, arg of args.setup
         if arg then add = arg[0]; loc = arg[1] else add = 0; loc = pos
@@ -303,7 +318,7 @@
         position = pos
         args.array.push({diff, val, position})
       args.diffs.push(value) for key, value of v.diff for k, v of args.array
-      args.diffs.sort((a,b) -> a - b)
+      args.diffs.sort(sort)
       pos_ref = args.setup.middle[1]
       for i in [0..8]
         break_loop = false
@@ -380,6 +395,7 @@
 
   # Resize event handlers
   resize = () ->
+    backdropCanvas()
     missie.resize() for missie in miss.missies
 
   window.onresize = -> resize()

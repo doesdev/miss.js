@@ -19,6 +19,7 @@
           font_color: '#000'
         };
       };
+      backdrop(false);
       if (misset.elements) {
         miss.off();
         i = 0;
@@ -56,7 +57,9 @@
         this.bindOff = __bind(this.bindOff, this);
         this.bindOn = __bind(this.bindOn, this);
         this.resize = __bind(this.resize, this);
+        this.canvasExtract = __bind(this.canvasExtract, this);
         this.highlight = __bind(this.highlight, this);
+        this.buildBorder = __bind(this.buildBorder, this);
         this.boxSizing = __bind(this.boxSizing, this);
         this.buildBox = __bind(this.buildBox, this);
         switch (el) {
@@ -77,6 +80,7 @@
         this.msg = msg;
         this.index = i;
         this.buildBox();
+        this.buildBorder();
       }
 
       Miss.prototype.buildBox = function() {
@@ -150,38 +154,58 @@
         }
       };
 
+      Miss.prototype.buildBorder = function() {
+        if (!(this.opts.highlight && this.el)) {
+          return;
+        }
+        if (this.border == null) {
+          this.border = document.getElementById("miss_hl_" + this.index) || document.createElement('div');
+        }
+        this.border.id = "miss_hl_" + this.index;
+        this.border.style.position = "fixed";
+        if (this.opts.highlight) {
+          this.border.style.border = "" + (this.opts.highlight_width || 0) + "px solid " + this.opts.highlight_color;
+        }
+        showHideEl(this.border, this.box.miss_visible || false);
+        return miss.bd.appendChild(this.border);
+      };
+
       Miss.prototype.highlight = function() {
-        var coord, ctx, hl, hl_border;
+        var coord, hl_border;
+        if (!(this.opts.highlight && this.el)) {
+          return;
+        }
         coord = coords(this.el);
         hl_border = this.opts.highlight ? this.opts.highlight_width : 0;
-        hl = document.getElementById("miss_hl_" + this.index) || document.createElement('div');
-        hl.id = "miss_hl_" + this.index;
-        hl.style.position = "fixed";
-        hl.style.top = "" + (coord.top - hl_border) + "px";
-        hl.style.left = "" + (coord.left - hl_border) + "px";
-        hl.style.width = "" + (coord.width + hl_border) + "px";
-        hl.style.height = "" + (coord.height + hl_border) + "px";
-        if (this.opts.highlight) {
-          hl.style.border = "" + hl_border + "px solid " + this.opts.highlight_color;
+        this.border.style.top = "" + (coord.top - hl_border) + "px";
+        this.border.style.left = "" + (coord.left - hl_border) + "px";
+        this.border.style.width = "" + (coord.width + hl_border) + "px";
+        this.border.style.height = "" + (coord.height + hl_border) + "px";
+        showHideEl(this.border, this.box.miss_visible || false);
+        return miss.bd.appendChild(this.border);
+      };
+
+      Miss.prototype.canvasExtract = function() {
+        var coord, ctx, hl_border;
+        if (!(this.opts.highlight && this.el)) {
+          return;
         }
-        miss.bd.appendChild(hl);
+        coord = coords(this.el);
+        hl_border = this.opts.highlight ? this.opts.highlight_width : 0;
         ctx = document.getElementById('miss_bd_canvas').getContext('2d');
         ctx.save();
         ctx.globalAlpha = 1;
         ctx.globalCompositeOperation = 'destination-out';
         ctx.beginPath();
         ctx.fillRect(coord.left, coord.top, coord.width + hl_border, coord.height + hl_border);
-        ctx.fill();
         return ctx.restore();
       };
 
       Miss.prototype.resize = function() {
         this.boxSizing();
-        if (!this.alone) {
-          backdropCanvas();
-        }
-        if (this.el) {
-          return this.highlight();
+        this.highlight();
+        if (this.box.miss_visible) {
+          return this.canvasExtract();
         }
       };
 
@@ -219,14 +243,16 @@
         if (alone == null) {
           alone = null;
         }
-        if (miss.bd.visible && !alone) {
+        if (miss.bd.v && !alone) {
           miss.on();
         }
         if (alone) {
           miss.off();
         }
-        if (this.el) {
-          this.highlight();
+        this.highlight();
+        this.canvasExtract();
+        if (this.border) {
+          showHideEl(this.border, true);
         }
         showHideEl(this.box, true, alone);
         pageNumbers(this.box);
@@ -234,15 +260,13 @@
       };
 
       Miss.prototype.off = function(alone) {
-        var hl;
         if (alone == null) {
           alone = null;
         }
-        hl = document.getElementById("miss_hl_" + this.index);
-        if (hl) {
-          hl.parentNode.removeChild(hl);
-        }
         backdropCanvas(alone);
+        if (this.border) {
+          showHideEl(this.border, false);
+        }
         showHideEl(this.box, false);
         if (alone) {
           miss.off();
@@ -372,7 +396,7 @@
       };
     };
     gravity = function(coords, height, width) {
-      var add, arg, args, ary_x, ary_y, box_center, break_loop, center, diff, dk, dv, el_center, i, k, key, loc, map_x, map_y, mapping_x, mapping_y, optimal_x, optimal_y, overlap, pos, pos_ref, position, v, val, value, x, y, _i, _j, _k, _len, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+      var add, arg, args, ary_x, ary_y, box_center, break_loop, center, diff, dk, dv, el_center, i, k, key, loc, map_x, map_y, mapping_x, mapping_y, optimal_x, optimal_y, overlap, pos, pos_ref, position, sort, v, val, value, x, y, _i, _j, _k, _len, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
       center = {
         x: testEl().height / 2,
         y: testEl().width / 2
@@ -411,6 +435,9 @@
           right: null
         }
       };
+      sort = function(a, b) {
+        return a - b;
+      };
       _ref = [mapping_x, mapping_y];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         args = _ref[_i];
@@ -448,9 +475,7 @@
             args.diffs.push(value);
           }
         }
-        args.diffs.sort(function(a, b) {
-          return a - b;
-        });
+        args.diffs.sort(sort);
         pos_ref = args.setup.middle[1];
         for (i = _j = 0; _j <= 8; i = ++_j) {
           break_loop = false;
@@ -598,6 +623,7 @@
     };
     resize = function() {
       var missie, _i, _len, _ref, _results;
+      backdropCanvas();
       _ref = miss.missies;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
