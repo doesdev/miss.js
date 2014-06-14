@@ -112,6 +112,8 @@
         @box.style.visibility = 'hidden'
         showHideEl(@box, true)
       # set box dimensions
+      @box.style.width = ''
+      @box.style.height = ''
       @box.style.maxWidth = @opts.box_width || if screen.width < 600 then "85%" else "40%"
       @box.style.maxHeight = @opts.box_height || if screen.height < 400 then "80%" else "60%"
       @box.style.width = "#{@box.offsetWidth}px" || @box.style.maxWidth

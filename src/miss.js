@@ -145,6 +145,8 @@
           this.box.style.visibility = 'hidden';
           showHideEl(this.box, true);
         }
+        this.box.style.width = '';
+        this.box.style.height = '';
         this.box.style.maxWidth = this.opts.box_width || (screen.width < 600 ? "85%" : "40%");
         this.box.style.maxHeight = this.opts.box_height || (screen.height < 400 ? "80%" : "60%");
         this.box.style.width = ("" + this.box.offsetWidth + "px") || this.box.style.maxWidth;
