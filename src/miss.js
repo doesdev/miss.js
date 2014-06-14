@@ -84,11 +84,12 @@
       }
 
       Miss.prototype.buildBox = function() {
-        var box, close, msg_box, nav, nav_box, page_num, rgba, title_box;
+        var box, close, msg_box, nav_box, nav_btns, page_num, rgba, title_box;
         box = document.createElement('div');
         box.id = "miss_" + this.order;
         box.className = 'miss-box popover';
         box.style.position = 'fixed';
+        box.style.overflow = 'hidden';
         box.style.zIndex = this.opts.z_index + 1;
         title_box = document.createElement('div');
         title_box.className = 'miss-titlebar popover-title';
@@ -96,10 +97,13 @@
         title_box.innerHTML = this.title + close;
         msg_box = document.createElement('div');
         msg_box.className = 'miss-msg popover-content';
+        msg_box.style.overflow = 'auto';
+        msg_box.style.height = '100%';
         msg_box.innerHTML = this.msg;
         nav_box = document.createElement('div');
+        nav_box.id = "miss_nav_" + this.index;
         nav_box.className = 'miss-nav';
-        nav = '<div class="btn-group"> <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button> <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button> <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>';
+        nav_btns = '<div class="btn-group"> <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button> <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button> <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>';
         page_num = '<p class="miss-step-num text-center"></p>';
         if (!miss.global.theme) {
           rgba = colorConvert(this.opts.titlebar_color);
@@ -114,21 +118,23 @@
           msg_box.style.padding = '8px';
           page_num = page_num.replace('>', ' style="text-align:center;">');
         }
-        nav_box.innerHTML = nav + page_num;
+        nav_box.innerHTML = nav_btns + page_num;
         box.appendChild(title_box);
         msg_box.appendChild(nav_box);
         box.appendChild(msg_box);
         showHideEl(box, false);
         document.body.appendChild(box);
         this.box = box;
+        this.nav = nav_box;
         return this.boxSizing();
       };
 
       Miss.prototype.boxSizing = function() {
-        var bd_miss_visible, box_miss_visible, coord, gravitate;
+        var bd_miss_visible, box_miss_visible, coord, gravitate, screen;
         if (this.el) {
           coord = coords(this.el);
         }
+        screen = testEl();
         bd_miss_visible = miss.bd.miss_visible || null;
         box_miss_visible = this.box.miss_visible || null;
         if (!bd_miss_visible) {
@@ -139,8 +145,10 @@
           this.box.style.visibility = 'hidden';
           showHideEl(this.box, true);
         }
-        this.box.style.maxWidth = "40%";
-        this.box.style.maxHeight = "60%";
+        this.box.style.maxWidth = this.opts.box_width || (screen.width < 600 ? "85%" : "40%");
+        this.box.style.maxHeight = this.opts.box_height || (screen.height < 400 ? "80%" : "60%");
+        this.box.style.width = ("" + this.box.offsetWidth + "px") || this.box.style.maxWidth;
+        this.box.style.height = ("" + this.box.offsetHeight + "px") || this.box.style.maxHeight;
         gravitate = this.el ? gravity(coord, this.box.offsetHeight, this.box.offsetWidth) : {};
         this.box.style.top = "" + (gravitate.x || (testEl().height / 2) - (this.box.offsetHeight / 2)) + "px";
         this.box.style.left = "" + (gravitate.y || (testEl().width / 2) - (this.box.offsetWidth / 2)) + "px";
@@ -251,6 +259,9 @@
         }
         this.highlight();
         this.canvasExtract();
+        if (alone) {
+          showHideEl(this.nav, false);
+        }
         if (this.border) {
           showHideEl(this.border, true);
         }
@@ -268,6 +279,9 @@
           showHideEl(this.border, false);
         }
         showHideEl(this.box, false);
+        if (alone) {
+          showHideEl(this.nav, true);
+        }
         if (alone) {
           miss.off();
         }
@@ -485,7 +499,7 @@
             _ref5 = v.diff;
             for (dk in _ref5) {
               dv = _ref5[dk];
-              if (dv === args.diffs[i] && v.val[dk] >= 0) {
+              if (dv === args.diffs[i] && v.val[dk] >= 0 && (v.val[dk] + args.metric) < testEl().width) {
                 overlap = (val = v.val[dk]) < coords[pos_ref] + coords[args.mstr] && val + args.metric > coords[pos_ref];
                 args.optimal.push({
                   val: val,
@@ -509,8 +523,8 @@
         }
       }
       return {
-        x: x.val,
-        y: y.val
+        x: x ? x.val : center.x - box_center.x,
+        y: y ? y.val : center.y - box_center.y
       };
     };
     miss.current = function() {
@@ -748,6 +762,8 @@
         backdrop: true,
         backdrop_color: '#000',
         backdrop_opacity: 0.5,
+        box_width: null,
+        box_height: null,
         z_index: 2100,
         welcome_title: null,
         welcome_msg: null,

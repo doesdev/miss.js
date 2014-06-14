@@ -53,6 +53,7 @@
       box.id = "miss_#{@order}"
       box.className = 'miss-box popover'
       box.style.position = 'fixed'
+      box.style.overflow = 'hidden'
       box.style.zIndex = @opts.z_index + 1
       # title bar
       title_box = document.createElement('div')
@@ -63,11 +64,14 @@
       # content area
       msg_box = document.createElement('div')
       msg_box.className = 'miss-msg popover-content'
+      msg_box.style.overflow = 'auto'
+      msg_box.style.height = '100%'
       msg_box.innerHTML = @msg
       nav_box = document.createElement('div')
+      nav_box.id = "miss_nav_#{@index}"
       nav_box.className = 'miss-nav'
       # navigation
-      nav = '<div class="btn-group">
+      nav_btns = '<div class="btn-group">
               <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button>
               <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button>
               <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>'
@@ -86,17 +90,18 @@
         msg_box.style.padding = '8px'
         page_num = page_num.replace('>', ' style="text-align:center;">')
       # add them to DOM
-      nav_box.innerHTML = nav + page_num
+      nav_box.innerHTML = nav_btns + page_num
       box.appendChild(title_box)
       msg_box.appendChild(nav_box)
       box.appendChild(msg_box)
       showHideEl(box, false)
       document.body.appendChild(box)
-      @box = box
+      @box = box; @nav = nav_box
       @boxSizing()
 
     boxSizing: () =>
       coord = coords(@el) if @el
+      screen = testEl()
       # ensure box is on dom for obtaining dimensions
       bd_miss_visible = miss.bd.miss_visible || null
       box_miss_visible = @box.miss_visible || null
@@ -107,8 +112,10 @@
         @box.style.visibility = 'hidden'
         showHideEl(@box, true)
       # set box dimensions
-      @box.style.maxWidth = "40%"
-      @box.style.maxHeight = "60%"
+      @box.style.maxWidth = @opts.box_width || if screen.width < 600 then "85%" else "40%"
+      @box.style.maxHeight = @opts.box_height || if screen.height < 400 then "80%" else "60%"
+      @box.style.width = "#{@box.offsetWidth}px" || @box.style.maxWidth
+      @box.style.height = "#{@box.offsetHeight}px" || @box.style.maxHeight
       # set box gravity
       gravitate = if @el then gravity(coord, @box.offsetHeight, @box.offsetWidth) else {}
       @box.style.top = "#{gravitate.x || (testEl().height / 2) - (@box.offsetHeight / 2)}px"
@@ -154,7 +161,7 @@
       ctx.restore()
 
     resize: () =>
-      this.boxSizing()
+      @boxSizing()
       @highlight()
       @canvasExtract() if @box.miss_visible
 
@@ -175,6 +182,7 @@
       miss.off() if alone
       @highlight()
       @canvasExtract()
+      showHideEl(@nav, false) if alone
       showHideEl(@border, true) if @border
       showHideEl(@box, true, alone)
       pageNumbers(@box)
@@ -184,6 +192,7 @@
       backdropCanvas(alone)
       showHideEl(@border, false) if @border
       showHideEl(@box, false)
+      showHideEl(@nav, true) if alone
       miss.off() if alone
       @alone = null
 
@@ -324,14 +333,14 @@
         break_loop = false
         for k, v of args.array
           for dk, dv of v.diff
-            if dv == args.diffs[i] && v.val[dk] >= 0
+            if dv == args.diffs[i] && v.val[dk] >= 0 && (v.val[dk] + args.metric) < testEl().width
               overlap = ((val = v.val[dk]) < coords[pos_ref] + coords[args.mstr] && val + args.metric > coords[pos_ref])
               args.optimal.push({val: val, diff: dv, position: "#{v.position}_#{dk}", overlap: overlap})
               break_loop = true; break
           break if break_loop
     break for i in [0..8] when (x = optimal_x[i]) && (y = optimal_y[i]) && !(x.overlap && y.overlap)
-    x: x.val
-    y: y.val
+    x: if x then x.val else (center.x - box_center.x)
+    y: if y then y.val else (center.y - box_center.y)
 
   # Navigate missies
   miss.current = () ->
@@ -466,6 +475,8 @@
       backdrop: true
       backdrop_color: '#000'
       backdrop_opacity: 0.5
+      box_width: null
+      box_height: null
       z_index: 2100
       welcome_title: null
       welcome_msg: null
