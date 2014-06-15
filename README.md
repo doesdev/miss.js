@@ -261,7 +261,7 @@ We have taken a couple of steps to make that is easy as possible. First we gave 
 which are listed below. Second we added the necessary classes to be compatible with bootstrap out of the box. 
 So, if you're using bootstrap you don't have to do anything more than setting `theme: 'custom'`.
 
-**CSS Selectors**
+**CSS Selectors**   
 Popover Container:   
 `.miss-box`   
 `.popover`   
