@@ -262,48 +262,48 @@ which are listed below. Second we added the necessary classes to be compatible w
 So, if you're using bootstrap you don't have to do anything more than setting `theme: 'custom'`.
 
 **CSS Selectors**
-Popover Container:
-`.miss-box` 
-`.popover`
+Popover Container:   
+`.miss-box`   
+`.popover`   
 
-Title Bar:
-`.miss-titlebar`
-`.popover-title`
+Title Bar:   
+`.miss-titlebar`   
+`.popover-title`   
 
-Close Button:
-`.miss-close`
-`.close`
+Close Button:   
+`.miss-close`   
+`.close`   
 
-Message Content Area:
-`.miss-msg`
-`.popover-content`
+Message Content Area:   
+`.miss-msg`   
+`.popover-content`   
 
-Navigation Container:
-`.miss-nav`
+Navigation Container:   
+`.miss-nav`   
 
-Navigation Button Group:
-`.miss-btn-group`
-`.btn-group`
+Navigation Button Group:   
+`.miss-btn-group`   
+`.btn-group`   
 
-Navigation Button Previous:
-`.miss-prev` 
-`.btn` 
-`.btn-default`
+Navigation Button Previous:   
+`.miss-prev`   
+`.btn`   
+`.btn-default`   
 
-Navigation Button Next:
-`.miss-next` 
-`.btn` 
-`.btn-default`
+Navigation Button Next:   
+`.miss-next`   
+`.btn`   
+`.btn-default`   
 
-Navigation Button Done:
-`.miss-done` 
-`.btn` 
-`.btn-primary`
-`.pull-right`
+Navigation Button Done:   
+`.miss-done`   
+`.btn`   
+`.btn-primary`   
+`.pull-right`   
 
-Page Numbers:
-`.miss-step-num` 
-`.text-center`
+Page Numbers:   
+`.miss-step-num`    
+`.text-center`   
       
 Alternatives
 ----
