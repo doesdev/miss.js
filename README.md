@@ -189,66 +189,66 @@ miss({
 Below is a list of all available options. All can be set either withing the settings object or in the element object 
 except for those listed as `global-only` which can only be set within settings.
 
-- **theme** *(default=null, accepts=[null, 'custom'])*
+- **theme** *(default=null, accepts=[null, 'custom'])*   
     Theme for walkthrough popovers. Set to `'custom'` to use your own styling.
-- **check_url** *(default=null, accepts=[valid url])* `global-only`
+- **check_url** *(default=null, accepts=[valid url])* `global-only`   
     URL for miss to check whether walkthrough should automatically show for user. 
     Should return true/false value for `check_keyname` key and must be in json format.
     Typically this will be a user preferences endpoint on your app.
-- **check_method** *(default='GET', accepts=['GET','POST'])* `global-only`
+- **check_method** *(default='GET', accepts=['GET','POST'])* `global-only`   
     HTTP method to be used in `check_url`.
-- **check_keyname** *(default=null, accepts=[any valid keyname you choose])* `global-only`
+- **check_keyname** *(default=null, accepts=[any valid keyname you choose])* `global-only`   
     Key name to be checked in `check_url`. This key/value pair can be deeply nested.
-- **show_on_load** *(default=true, accepts=[true, false])* `global-only`
+- **show_on_load** *(default=true, accepts=[true, false])* `global-only`   
     Should walkthrough show on page load. *Note: it won't again locally show after a user has completed it*
-- **always_show** *(default=null, accepts=[true, false])* `global-only`
+- **always_show** *(default=null, accepts=[true, false])* `global-only`   
     If set true walkthrough will always show on load regardless of a user having been through it.
-- **trigger_el** *(default=null, accepts=[any valid element selector in string format])* `global-only`
+- **trigger_el** *(default=null, accepts=[any valid element selector in string format])* `global-only`   
     Selector of element that will show the tour when clicked, such as a help link.
-- **key_modifier** *(default=null, accepts=['alt', 'ctrl', 'shift', 'cmd'])* `global-only`
+- **key_modifier** *(default=null, accepts=['alt', 'ctrl', 'shift', 'cmd'])* `global-only`   
     Key to be used as modifier when walkthrough is not visible. When depressed by user 
     the popoover will show when the target element is hovered over.
-- **key_on** *(default=null, accepts=[numeric key code])* `global-only`
+- **key_on** *(default=null, accepts=[numeric key code])* `global-only`   
     Key used to turn walkthrough on. Must be the numeric key code found in parenthesis within the value column 
     [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.keyCode#Constants_for_keyCode_value). 
-- **key_off** *(default=null, accepts=[numeric key code])* `global-only`
+- **key_off** *(default=null, accepts=[numeric key code])* `global-only`   
     Key used to turn walkthrough off. Must be the numeric key code found in parenthesis within the value column 
     [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.keyCode#Constants_for_keyCode_value). 
-- **backdrop** *(default=true, accepts=[true, false])* `global-only`
+- **backdrop** *(default=true, accepts=[true, false])* `global-only`   
     Should backdrop show.
-- **backdrop_color** *(default='#000', accepts=[hex color code])* `global-only`
+- **backdrop_color** *(default='#000', accepts=[hex color code])* `global-only`   
     Backdrop color.
-- **backdrop_opacity** *(default=0.5, accepts=[integer less than or equal to 1])* `global-only`
+- **backdrop_opacity** *(default=0.5, accepts=[integer less than or equal to 1])* `global-only`   
     Backdrop opacity.
-- **box_width** *(default=null, accepts=[CSS compliant value (i.e. '40%', '200px')])*
+- **box_width** *(default=null, accepts=[CSS compliant value (i.e. '40%', '200px')])*   
     Width of popover box. 
-- **box_height** *(default=null, accepts=[CSS compliant value (i.e. '40%', '200px')])*
+- **box_height** *(default=null, accepts=[CSS compliant value (i.e. '40%', '200px')])*   
     Height of popover box.
-- **z_index** *(default=2100, accepts=[integer])* `global-only`
+- **z_index** *(default=2100, accepts=[integer])* `global-only`   
     z-index of tour elements (starting with backdrop)
-- **highlight** *(default=true, accepts=[true, false])*
+- **highlight** *(default=true, accepts=[true, false])*   
     Highlight the target element with border and exclusion from backdrop.
-- **highlight_width** *(default=3, accepts=[integer])*
+- **highlight_width** *(default=3, accepts=[integer])*   
     Pixel width of highlight border.
-- **highlight_color** *(default='#fff', accepts=[hex color code])*
+- **highlight_color** *(default='#fff', accepts=[hex color code])*   
     Color of highlight border.
-- **btn_prev_text** *(default='&#8592 prev', accepts=[string])*
+- **btn_prev_text** *(default='&#8592 prev', accepts=[string])*   
     Text to display in 'previous' button.
-- **btn_next_text** *(default='next &#8594', accepts=[string])*
+- **btn_next_text** *(default='next &#8594', accepts=[string])*   
     Text to display in 'next' button.
-- **btn_done_text** *(default='done', accepts=[string])*
+- **btn_done_text** *(default='done', accepts=[string])*   
     Text to display in 'done' button.
-- **order** *(default='series', accepts=['series', integer])*
+- **order** *(default='series', accepts=['series', integer])*   
     Order that element should go in. Series orders them according to their initialization and dom appearance order.
-- **background_color** *(default='#f5f5f5', accepts=[hex color code])*
+- **background_color** *(default='#f5f5f5', accepts=[hex color code])*   
     Color of popover background.
-- **titlebar_color** *(default='#939393', accepts=[hex color code])*
+- **titlebar_color** *(default='#939393', accepts=[hex color code])*   
     Color of title bar background.
-- **font_color** *(default='#000', accepts=[hex color code])*
+- **font_color** *(default='#000', accepts=[hex color code])*   
     Color of popover text.
-- **title** *(default=null, accepts=[string])*
+- **title** *(default=null, accepts=[string])*   
     Title to display in popover.
-- **msg** *(default=null, accepts=[string, string interpolated element selector])*
+- **msg** *(default=null, accepts=[string, string interpolated element selector])*   
     Content to display in popover.
       
 Alternatives
