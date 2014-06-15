@@ -19,6 +19,7 @@ Miss.js is dependency free and provides a simple API for easy implementation.
   - [Getting Started](#getting-started)    
   - [Configuration](#configuration)    
   - [API Options](#api-options)
+  - [Styling](#styling)
 - [Alternatives](#alternatives)  
 - [Contributing](#contributing)        
 
@@ -251,6 +252,59 @@ except for those listed as `global-only` which can only be set within settings.
 - **msg** *(default=null, accepts=[string, string interpolated element selector])*   
     Content to display in popover.
       
+Styling
+----
+Miss.js does not make design decisions for you. We do provide a minimal baseline styling if you 
+do not set the theme option, but we highly recommend that you style the walkthrough to match your app. 
+ 
+We have taken a couple of steps to make that is easy as possible. First we gave everything class names 
+which are listed below. Second we added the necessary classes to be compatible with bootstrap out of the box. 
+So, if you're using bootstrap you don't have to do anything more than setting `theme: 'custom'`.
+
+**CSS Selectors**
+Popover Container:
+`.miss-box` 
+`.popover`
+
+Title Bar:
+`.miss-titlebar`
+`.popover-title`
+
+Close Button:
+`.miss-close`
+`.close`
+
+Message Content Area:
+`.miss-msg`
+`.popover-content`
+
+Navigation Container:
+`.miss-nav`
+
+Navigation Button Group:
+`.miss-btn-group`
+`.btn-group`
+
+Navigation Button Previous:
+`.miss-prev` 
+`.btn` 
+`.btn-default`
+
+Navigation Button Next:
+`.miss-next` 
+`.btn` 
+`.btn-default`
+
+Navigation Button Done:
+`.miss-done` 
+`.btn` 
+`.btn-primary`
+`.pull-right`
+
+Page Numbers:
+`.miss-step-num` 
+`.text-center`
+      
 Alternatives
 ----
 There are quite a few commercial projects out there which provide top notch app walkthrough services. 
@@ -260,7 +314,7 @@ of the great projects out there.
 There are several open source projects providing this functionality, but if we were to use anything other than Miss.js
 it would be [Bootstrap Tour](http://bootstraptour.com). This project provides far more options than we ever will, 
 as well as a very nice API. We highly recommend this project for anyone needing more options than what we offer 
-(though we're open to suggestions) or anyone making heavy use of Bootstrap.
+(though we're open to suggestions).
 
 Contributing
 ----

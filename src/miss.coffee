@@ -83,7 +83,7 @@
       title_box = document.createElement('div')
       title_box.className = 'miss-titlebar popover-title'
       close = '<span style="float:right;cursor:pointer;" onclick="miss.off()"
-               class="close" aria-hidden="true">&times;</span>'
+               class="miss-close close" aria-hidden="true">&times;</span>'
       title_box.innerHTML = @title + close
       # content area
       msg_box = document.createElement('div')
@@ -95,7 +95,7 @@
       nav_box.id = "miss_nav_#{@index}"
       nav_box.className = 'miss-nav'
       # navigation
-      nav_btns = '<div class="btn-group">
+      nav_btns = '<div class="miss-btn-group btn-group">
               <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button>
               <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button>
               <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>'

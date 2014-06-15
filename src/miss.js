@@ -93,7 +93,7 @@
         box.style.zIndex = this.opts.z_index + 1;
         title_box = document.createElement('div');
         title_box.className = 'miss-titlebar popover-title';
-        close = '<span style="float:right;cursor:pointer;" onclick="miss.off()" class="close" aria-hidden="true">&times;</span>';
+        close = '<span style="float:right;cursor:pointer;" onclick="miss.off()" class="miss-close close" aria-hidden="true">&times;</span>';
         title_box.innerHTML = this.title + close;
         msg_box = document.createElement('div');
         msg_box.className = 'miss-msg popover-content';
@@ -103,7 +103,7 @@
         nav_box = document.createElement('div');
         nav_box.id = "miss_nav_" + this.index;
         nav_box.className = 'miss-nav';
-        nav_btns = '<div class="btn-group"> <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button> <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button> <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>';
+        nav_btns = '<div class="miss-btn-group btn-group"> <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button> <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button> <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>';
         page_num = '<p class="miss-step-num text-center"></p>';
         if (!miss.global.theme) {
           rgba = colorConvert(this.opts.titlebar_color);
