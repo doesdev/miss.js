@@ -47,7 +47,7 @@
           # initialize element / selector based instances
           for el in document.querySelectorAll.call(document, k)
             title = opts.title || el.dataset.missTitle || null
-            msg = message(opts.msg) || message(el.dataset.missMsg) || null
+            msg = message(el.dataset.missMsg) || message(opts.msg) || null
             miss.missies.push(new Miss(el, i = i + 1, opts, title, msg)) unless !(title && msg)
       # functions to call once all missies are loaded
       sortMissies()
@@ -453,7 +453,8 @@
       key = event.which || event.char || event.charCode || event.key || event.keyCode
       miss.previous() if key == 37
       miss.next() if key == 39
-      miss.off() if key == 27
+      miss.on() if key == parseInt(miss.global.key_on, 10)
+      miss.off() if key == 27 || key == parseInt(miss.global.key_off, 10)
       miss.destroy() if key == 46
 
   document.addEventListener('keydown', navWithKeys, false)
@@ -497,25 +498,22 @@
   # Global settings
   miss.settings = (set) ->
     miss.global = extend(
-      theme: null
-      check_url: null
+      #theme: null
+      #check_url: null
       check_method: 'GET'
-      check_keyname: null
+      #check_keyname: null
       show_on_load: true
-      always_show: null
-      trigger_el: null
-      key_modifier: null # 'alt', 'ctrl', 'shift', 'cmd'
-      key_on: null
-      key_off: null
-      key_hover: null
+      #always_show: null
+      #trigger_el: null
+      #key_modifier: null # 'alt', 'ctrl', 'shift', 'cmd'
+      #key_on: null
+      #key_off: null
       backdrop: true
       backdrop_color: '#000'
       backdrop_opacity: 0.5
-      box_width: null
-      box_height: null
+      #box_width: null
+      #box_height: null
       z_index: 2100
-      welcome_title: null
-      welcome_msg: null
       highlight: true
       highlight_width: 3
       highlight_color: '#fff'

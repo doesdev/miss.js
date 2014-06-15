@@ -38,7 +38,7 @@
             for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
               el = _ref1[_i];
               title = opts.title || el.dataset.missTitle || null;
-              msg = message(opts.msg) || message(el.dataset.missMsg) || null;
+              msg = message(el.dataset.missMsg) || message(opts.msg) || null;
               if (!!(title && msg)) {
                 miss.missies.push(new Miss(el, i = i + 1, opts, title, msg));
               }
@@ -670,7 +670,10 @@
         if (key === 39) {
           miss.next();
         }
-        if (key === 27) {
+        if (key === parseInt(miss.global.key_on, 10)) {
+          miss.on();
+        }
+        if (key === 27 || key === parseInt(miss.global.key_off, 10)) {
           miss.off();
         }
         if (key === 46) {
@@ -751,25 +754,12 @@
     };
     miss.settings = function(set) {
       return miss.global = extend({
-        theme: null,
-        check_url: null,
         check_method: 'GET',
-        check_keyname: null,
         show_on_load: true,
-        always_show: null,
-        trigger_el: null,
-        key_modifier: null,
-        key_on: null,
-        key_off: null,
-        key_hover: null,
         backdrop: true,
         backdrop_color: '#000',
         backdrop_opacity: 0.5,
-        box_width: null,
-        box_height: null,
         z_index: 2100,
-        welcome_title: null,
-        welcome_msg: null,
         highlight: true,
         highlight_width: 3,
         highlight_color: '#fff',

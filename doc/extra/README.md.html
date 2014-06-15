@@ -64,42 +64,12 @@ and decided to explain it, rather than change it.</p><p>We built Miss.js with th
 <li>It should provide intelligent positioning of popover (no more direction specification, YAY!!!)</li>
 </ul>
 <h2 id="how-">How?</h2><p>Miss.js is simple to use. </p><ol>
-<li>Get the js file <code>dist/miss.min.js</code> </li>
+<li>Get the js file <a href="https://raw.githubusercontent.com/musocrat/miss.js/master/dist/miss.min.js"><code>dist/miss.min.js</code></a> </li>
 <li>Include at the bottom of the body <code>&lt;script src=&quot;miss.min.js&quot;&gt;&lt;/script&gt;</code>. </li>
-<li>Initialize with options (intermediate initialization shown, see below for basic and advanced usage)</li>
+<li>Initialize with options (basic initialization shown, see below for advanced usage)</li>
 </ol>
 <pre><code class="lang-html">&lt;script&gt;
-    miss({
-        settings: {
-            key_modifier: &#39;alt&#39;,
-            show_on_load: true
-        },
-        elements: {
-            welcome: {
-                title: &quot;Welcome to Our Awesome App&quot;,
-                msg: &quot;We&#39;re gonna show you around. Stay for the full tour or exit and jump in at any time.&quot;
-            },
-            &quot;.first-el&quot;: {
-                order: 1,
-                title: &quot;First Stop&quot;,
-                msg: &quot;This is the first element we will explain during the tour.&quot;
-            },
-            &quot;.second-el&quot;: {
-                order: 2,
-                title: &quot;Second Stop&quot;,
-                msg: &quot;This is the second element we will explain during the tour.&quot;
-            },
-            &quot;#third-el&quot;: {
-                order: 3,
-                title: &quot;Third Stop&quot;,
-                msg: &quot;This is the third element we will explain during the tour.&quot;
-            },
-            exit: {
-                title: &quot;Enjoy Your Stay&quot;,
-                msg: &quot;Thanks for sticking around for the tour. We hope you enjoy doing cool things with our app.&quot;
-            }
-        }
-    });
+    miss({elements: {welcome: {title: &#39;Welcome&#39;, msg: &#39;Some welcome message&#39;}, &quot;.miss&quot;: null}});
 &lt;/script&gt;
 </code></pre>
 <h2 id="features">Features</h2>
@@ -112,45 +82,172 @@ and decided to explain it, rather than change it.</p><p>We built Miss.js with th
 </ul>
 <h2 id="demos">Demos</h2><p>We have a super simple demo on our <a href="http://musocrat.github.io/miss.js/">github page</a>. 
 Expect a more through demo in the near future.</p><h2 id="docs">Docs</h2>
-<h3 id="getting-started">Getting Started</h3><p>WIP: will be here soon
-&lt;!--
-<strong>i.</strong>  Add script where you desire <em>(bottom of body is recommended)</em></p><pre><code class="lang-html">&lt;script src=&quot;javascripts/jquery-video-lightning.js&quot;&gt;&lt;/script&gt;
-</code></pre><p><strong>ii.</strong> Add vendor prefixed video id to target element <em>(i.e. Youtube:</em> <code>data-video-id=&quot;y-PKffm2uI4dk&quot;</code>, 
-<em>Vimeo:</em> <code>data-video-id=&quot;v-29749357&quot;</code>)</p><pre><code class="lang-html">&lt;span class=&quot;video-link&quot; data-video-id=&quot;y-PKffm2uI4dk&quot;&gt;Youtube&lt;/span&gt;
-</code></pre><p><strong>iii.</strong>  Initialize it on the desired elements with any options you please 
-<em>(options can also be passed as data attributes)</em></p><pre><code class="lang-html">&lt;script&gt;
-    $(function() {
-        $(&quot;.video-link&quot;).jqueryVideoLightning({
-            autoplay: 1,
-            color: &quot;white&quot;
-        });
-    });
+<h3 id="getting-started">Getting Started</h3>
+<ol>
+<li>Make design decisions   <ul>
+<li>do you want to configure each element individually or initialize on a class and setup options in data-attributes? </li>
+<li>do you want to set title and message content in initialization object or in data-attributes?   </li>
+<li>do you want users to have the option to show popover when they hover over element? <code>key_modifier</code>   </li>
+<li>do you want the walkthrough to start on load or only when they click a link? <code>show_on_load</code>, <code>trigger_el</code>   </li>
+<li>do you want to style popovers yourself (highly recommended) or use the default theme (meh)? <code>theme</code></li>
+</ul>
+</li>
+<li>Include miss.js at the bottom of the body <code>&lt;script src=&quot;miss.min.js&quot;&gt;&lt;/script&gt;</code>.   </li>
+<li>Initialize it on the desired elements with options   <pre><code class="lang-html">&lt;script&gt;
+ miss({
+     settings: {
+         key_modifier: &#39;alt&#39;,
+         show_on_load: true,
+         theme: &#39;custom&#39;
+     },
+     elements: {
+         welcome: {
+             title: &quot;Welcome to Our Awesome App&quot;,
+             msg: &quot;We&#39;re gonna show you around.&quot;
+                       },
+         &quot;.first-el&quot;: {
+             order: 1,
+             title: &quot;First Stop&quot;,
+             msg: &quot;This is the first element we will explain during the tour.&quot;
+         },
+         &quot;.second-el&quot;: {
+             order: 2,
+             title: &quot;Second Stop&quot;,
+             msg: &quot;This is the second element we will explain during the tour.&quot;
+         },
+         &quot;#third-el&quot;: {
+             order: 3,
+             title: &quot;Third Stop&quot;,
+             msg: &quot;This is the third element we will explain during the tour.&quot;
+         },
+         exit: {
+             title: &quot;Enjoy Your Stay&quot;,
+             msg: &quot;Thanks for sticking around for the tour.&quot;
+         }
+     }
+ });
 &lt;/script&gt;
-</code></pre><p>--&gt;</p><h3 id="configuration">Configuration</h3><p>WIP: will be here soon
-&lt;!--
-Options can be passed in either of two ways. They can be passed in the initialization like so:</p><pre><code class="lang-javascript">$(function() {
-    $(&quot;.video-link&quot;).jqueryVideoLightning({
-        width: &quot;1280px&quot;,
-        height: &quot;720px&quot;,
-        autoplay: 1
-    });
+</code></pre>
+</li>
+</ol>
+<h3 id="configuration">Configuration</h3><p>One of the most important configuration decisions you will make is how you want to initialize elements. 
+You have two basic options.   </p><ol>
+<li>Setup each element individually in the initialization object, like so:   <pre><code class="lang-javascript">miss({
+ elements: {
+     &quot;#elA&quot;: {
+         order: 1,
+         title: &quot;Title A&quot;,
+         msg: &quot;Message content for A.&quot;
+     }, 
+     &quot;#elB&quot;: {
+         order: 2,
+         title: &quot;Title B&quot;,
+         msg: &quot;Message content for B.&quot;
+     }
+ }
 });
-</code></pre><p>Or they can be passed as data attributes: <em>(Note that data attributes are all prefixed with 
-<code>data-video</code> and underscored options should be dashed instead in data attributes. 
-So <code>start_time</code> becomes <code>data-video-start-time</code>)</em></p><pre><code class="lang-html">&lt;div class=&quot;video-link&quot; data-video-id=&quot;y-PKffm2uI4dk&quot; data-video-width=&quot;1280px&quot; 
-data-video-height=&quot;720px&quot; data-video-autoplay=&quot;1&quot; &gt;&lt;/div&gt;
-</code></pre><p>--&gt;</p><h3 id="api-options">API Options</h3><p>WIP: will be here soon
-&lt;!--
-jQuery Video Lightning exposes all available basic API options for both Youtube and Vimeo. 
-There are also a number of effect and behavior options that are available. The following 
-is the current list of available options.</p><ul>
-<li><strong>width</strong> <em>(default=&quot;640px&quot;)</em>
-  Y&amp;V: video width in px</li>
-<li><strong>height</strong> <em>(default=&quot;390px&quot;)</em>
-  Y&amp;V: video height in px</li>
-<li><strong>autoplay</strong> <em>(default=0)</em>
-  Y&amp;V: start playback immediately (0,1)
---&gt;</li>
+</code></pre>
+</li>
+<li>Initialize on a class and set title, message, and order in data attributes:</li>
+</ol>
+<pre><code class="lang-html">&lt;div class=&quot;tour&quot; data-miss-order=&quot;1&quot; data-miss-title=&quot;Title A&quot; data-miss-msg=&quot;Message content for A.&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;tour&quot; data-miss-order=&quot;2&quot; data-miss-title=&quot;Title B&quot; data-miss-msg=&quot;Message content for B.&quot;&gt;&lt;/div&gt;
+</code></pre>
+<pre><code class="lang-javascript">miss({elements: {&quot;.tour&quot;: null});
+</code></pre><p>Because large content, nested elements, and formatting are not recommended within initialization or data-attributes 
+we provide the option to reference another <em>(hidden)</em> element within the msg value. To do so you need to wrap the 
+element with Ruby-esque string interpolation <code>&quot;#{&#39;#hidden-element&#39;}&quot;</code></p><pre><code class="lang-html">&lt;div class=&quot;tour&quot; data-miss-order=&quot;1&quot; data-miss-title=&quot;Title A&quot; data-miss-msg=&quot;#{&#39;#tour_msg_a&#39;}&quot;&gt;&lt;/div&gt;
+&lt;div id=&quot;tour_msg_a&quot; style=&quot;display:none;&quot;&gt;
+    &lt;p&gt;This is a div containing some text as well as a list. You can stick jsu about anything in here.
+    &lt;ul&gt;
+        &lt;li&gt;Point 1&lt;/li&gt;
+        &lt;li&gt;Point 2&lt;/li&gt;
+        &lt;li&gt;Point 3&lt;/li&gt;
+    &lt;/ul&gt;
+&lt;div&gt;
+</code></pre><p>Most options can be set on a global or per element basis, the only exception being those marked global-only. 
+In the below examples both are doing the same thing, just a different way.</p><pre><code class="lang-javascript">miss({
+    settings: {
+        backdrop_color: &#39;#fff&#39;,
+        backdrop_opacity: 0.3
+    },
+    elements: {
+        &quot;.tour&quot;: null
+    }
+});
+</code></pre>
+<pre><code class="lang-javascript">miss({
+    elements: {
+        &quot;.tour&quot;: {
+             backdrop_color: &#39;#fff&#39;,
+             backdrop_opacity: 0.3
+         }
+    }
+});
+</code></pre>
+<h3 id="api-options">API Options</h3><p>Below is a list of all available options. All can be set either withing the settings object or in the element object 
+except for those listed as <code>global-only</code> which can only be set within settings.</p><ul>
+<li><strong>theme</strong> <em>(default=null, accepts=[null, &#39;custom&#39;])</em>
+  Theme for walkthrough popovers. Set to <code>&#39;custom&#39;</code> to use your own styling.</li>
+<li><strong>check_url</strong> <em>(default=null, accepts=[valid url])</em> <code>global-only</code>
+  URL for miss to check whether walkthrough should automatically show for user. 
+  Should return true/false value for <code>check_keyname</code> key and must be in json format.
+  Typically this will be a user preferences endpoint on your app.</li>
+<li><strong>check_method</strong> <em>(default=&#39;GET&#39;, accepts=[&#39;GET&#39;,&#39;POST&#39;])</em> <code>global-only</code>
+  HTTP method to be used in <code>check_url</code>.</li>
+<li><strong>check_keyname</strong> <em>(default=null, accepts=[any valid keyname you choose])</em> <code>global-only</code>
+  Key name to be checked in <code>check_url</code>. This key/value pair can be deeply nested.</li>
+<li><strong>show_on_load</strong> <em>(default=true, accepts=[true, false])</em> <code>global-only</code>
+  Should walkthrough show on page load. <em>Note: it won&#39;t again locally show after a user has completed it</em></li>
+<li><strong>always_show</strong> <em>(default=null, accepts=[true, false])</em> <code>global-only</code>
+  If set true walkthrough will always show on load regardless of a user having been through it.</li>
+<li><strong>trigger_el</strong> <em>(default=null, accepts=[any valid element selector in string format])</em> <code>global-only</code>
+  Selector of element that will show the tour when clicked, such as a help link.</li>
+<li><strong>key_modifier</strong> <em>(default=null, accepts=[&#39;alt&#39;, &#39;ctrl&#39;, &#39;shift&#39;, &#39;cmd&#39;])</em> <code>global-only</code>
+  Key to be used as modifier when walkthrough is not visible. When depressed by user 
+  the popoover will show when the target element is hovered over.</li>
+<li><strong>key_on</strong> <em>(default=null, accepts=[numeric key code])</em> <code>global-only</code>
+  Key used to turn walkthrough on. Must be the numeric key code found in parenthesis within the value column 
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.keyCode#Constants_for_keyCode_value">here</a>. </li>
+<li><strong>key_off</strong> <em>(default=null, accepts=[numeric key code])</em> <code>global-only</code>
+  Key used to turn walkthrough off. Must be the numeric key code found in parenthesis within the value column 
+  <a href="https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.keyCode#Constants_for_keyCode_value">here</a>. </li>
+<li><strong>backdrop</strong> <em>(default=true, accepts=[true, false])</em> <code>global-only</code>
+  Should backdrop show.</li>
+<li><strong>backdrop_color</strong> <em>(default=&#39;#000&#39;, accepts=[hex color code])</em> <code>global-only</code>
+  Backdrop color.</li>
+<li><strong>backdrop_opacity</strong> <em>(default=0.5, accepts=[integer less than or equal to 1])</em> <code>global-only</code>
+  Backdrop opacity.</li>
+<li><strong>box_width</strong> <em>(default=null, accepts=[CSS compliant value (i.e. &#39;40%&#39;, &#39;200px&#39;)])</em>
+  Width of popover box. </li>
+<li><strong>box_height</strong> <em>(default=null, accepts=[CSS compliant value (i.e. &#39;40%&#39;, &#39;200px&#39;)])</em>
+  Height of popover box.</li>
+<li><strong>z_index</strong> <em>(default=2100, accepts=[integer])</em> <code>global-only</code>
+  z-index of tour elements (starting with backdrop)</li>
+<li><strong>highlight</strong> <em>(default=true, accepts=[true, false])</em>
+  Highlight the target element with border and exclusion from backdrop.</li>
+<li><strong>highlight_width</strong> <em>(default=3, accepts=[integer])</em>
+  Pixel width of highlight border.</li>
+<li><strong>highlight_color</strong> <em>(default=&#39;#fff&#39;, accepts=[hex color code])</em>
+  Color of highlight border.</li>
+<li><strong>btn_prev_text</strong> <em>(default=&#39;&amp;#8592 prev&#39;, accepts=[string])</em>
+  Text to display in &#39;previous&#39; button.</li>
+<li><strong>btn_next_text</strong> <em>(default=&#39;next &amp;#8594&#39;, accepts=[string])</em>
+  Text to display in &#39;next&#39; button.</li>
+<li><strong>btn_done_text</strong> <em>(default=&#39;done&#39;, accepts=[string])</em>
+  Text to display in &#39;done&#39; button.</li>
+<li><strong>order</strong> <em>(default=&#39;series&#39;, accepts=[&#39;series&#39;, integer])</em>
+  Order that element should go in. Series orders them according to their initialization and dom appearance order.</li>
+<li><strong>background_color</strong> <em>(default=&#39;#f5f5f5&#39;, accepts=[hex color code])</em>
+  Color of popover background.</li>
+<li><strong>titlebar_color</strong> <em>(default=&#39;#939393&#39;, accepts=[hex color code])</em>
+  Color of title bar background.</li>
+<li><strong>font_color</strong> <em>(default=&#39;#000&#39;, accepts=[hex color code])</em>
+  Color of popover text.</li>
+<li><strong>title</strong> <em>(default=null, accepts=[string])</em>
+  Title to display in popover.</li>
+<li><strong>msg</strong> <em>(default=null, accepts=[string, string interpolated element selector])</em>
+  Content to display in popover.</li>
 </ul>
 <h2 id="alternatives">Alternatives</h2><p>There are quite a few commercial projects out there which provide top notch app walkthrough services. 
 That being said, we love open source and could not recommend a commercial product over some 
@@ -169,7 +266,7 @@ as well as a very nice API. We highly recommend this project for anyone needing 
       </div>
     </div>
     <div id='footer'>
-  June 14, 14 18:23:59 by
+  June 14, 14 20:47:30 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>

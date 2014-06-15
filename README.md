@@ -41,43 +41,13 @@ How?
 ----
 Miss.js is simple to use. 
 
-1. Get the js file `dist/miss.min.js` 
+1. Get the js file [`dist/miss.min.js`](https://raw.githubusercontent.com/musocrat/miss.js/master/dist/miss.min.js) 
 2. Include at the bottom of the body `<script src="miss.min.js"></script>`. 
-3. Initialize with options (intermediate initialization shown, see below for basic and advanced usage)
+3. Initialize with options (basic initialization shown, see below for advanced usage)
 
 ```html
 <script>
-    miss({
-        settings: {
-            key_modifier: 'alt',
-            show_on_load: true
-        },
-        elements: {
-            welcome: {
-                title: "Welcome to Our Awesome App",
-                msg: "We're gonna show you around. Stay for the full tour or exit and jump in at any time."
-            },
-            ".first-el": {
-                order: 1,
-                title: "First Stop",
-                msg: "This is the first element we will explain during the tour."
-            },
-            ".second-el": {
-                order: 2,
-                title: "Second Stop",
-                msg: "This is the second element we will explain during the tour."
-            },
-            "#third-el": {
-                order: 3,
-                title: "Third Stop",
-                msg: "This is the third element we will explain during the tour."
-            },
-            exit: {
-                title: "Enjoy Your Stay",
-                msg: "Thanks for sticking around for the tour. We hope you enjoy doing cool things with our app."
-            }
-        }
-    });
+    miss({elements: {welcome: {title: 'Welcome', msg: 'Some welcome message'}, ".miss": null}});
 </script>
 ```
 
@@ -96,70 +66,191 @@ Expect a more through demo in the near future.
 
 Docs
 ----
-
 ### Getting Started
-WIP: will be here soon
-<!--
-**i.**  Add script where you desire *(bottom of body is recommended)*
-```html
-<script src="javascripts/jquery-video-lightning.js"></script>
-```
-**ii.** Add vendor prefixed video id to target element *(i.e. Youtube:* `data-video-id="y-PKffm2uI4dk"`, 
-*Vimeo:* `data-video-id="v-29749357"`)
-```html
-<span class="video-link" data-video-id="y-PKffm2uI4dk">Youtube</span>
-```
-**iii.**  Initialize it on the desired elements with any options you please 
-*(options can also be passed as data attributes)*
+1. Make design decisions   
+    - do you want to configure each element individually or initialize on a class and setup options in data-attributes? 
+    - do you want to set title and message content in initialization object or in data-attributes?   
+    - do you want users to have the option to show popover when they hover over element? `key_modifier`   
+    - do you want the walkthrough to start on load or only when they click a link? `show_on_load`, `trigger_el`   
+    - do you want to style popovers yourself (highly recommended) or use the default theme (meh)? `theme`
+2. Include miss.js at the bottom of the body `<script src="miss.min.js"></script>`.   
+3. Initialize it on the desired elements with options   
 ```html
 <script>
-    $(function() {
-        $(".video-link").jqueryVideoLightning({
-            autoplay: 1,
-            color: "white"
-        });
+    miss({
+        settings: {
+            key_modifier: 'alt',
+            show_on_load: true,
+            theme: 'custom'
+        },
+        elements: {
+            welcome: {
+                title: "Welcome to Our Awesome App",
+                msg: "We're gonna show you around."
+                          },
+            ".first-el": {
+                order: 1,
+                title: "First Stop",
+                msg: "This is the first element we will explain during the tour."
+            },
+            ".second-el": {
+                order: 2,
+                title: "Second Stop",
+                msg: "This is the second element we will explain during the tour."
+            },
+            "#third-el": {
+                order: 3,
+                title: "Third Stop",
+                msg: "This is the third element we will explain during the tour."
+            },
+            exit: {
+                title: "Enjoy Your Stay",
+                msg: "Thanks for sticking around for the tour."
+            }
+        }
     });
 </script>
 ```
--->
 
 ### Configuration
-WIP: will be here soon
-<!--
-Options can be passed in either of two ways. They can be passed in the initialization like so:
+One of the most important configuration decisions you will make is how you want to initialize elements. 
+You have two basic options.   
+
+1. Setup each element individually in the initialization object, like so:   
 ```javascript
-$(function() {
-    $(".video-link").jqueryVideoLightning({
-        width: "1280px",
-        height: "720px",
-        autoplay: 1
-    });
+miss({
+    elements: {
+        "#elA": {
+            order: 1,
+            title: "Title A",
+            msg: "Message content for A."
+        }, 
+        "#elB": {
+            order: 2,
+            title: "Title B",
+            msg: "Message content for B."
+        }
+    }
 });
 ```
-Or they can be passed as data attributes: *(Note that data attributes are all prefixed with 
-`data-video` and underscored options should be dashed instead in data attributes. 
-So `start_time` becomes `data-video-start-time`)*
+2. Initialize on a class and set title, message, and order in data attributes:
+
 ```html
-<div class="video-link" data-video-id="y-PKffm2uI4dk" data-video-width="1280px" 
-data-video-height="720px" data-video-autoplay="1" ></div>
+<div class="tour" data-miss-order="1" data-miss-title="Title A" data-miss-msg="Message content for A."></div>
+<div class="tour" data-miss-order="2" data-miss-title="Title B" data-miss-msg="Message content for B."></div>
 ```
--->
+```javascript
+miss({elements: {".tour": null});
+```
+
+Because large content, nested elements, and formatting are not recommended within initialization or data-attributes 
+we provide the option to reference another *(hidden)* element within the msg value. To do so you need to wrap the 
+element with Ruby-esque string interpolation `"#{'#hidden-element'}"`
+
+```html
+<div class="tour" data-miss-order="1" data-miss-title="Title A" data-miss-msg="#{'#tour_msg_a'}"></div>
+<div id="tour_msg_a" style="display:none;">
+    <p>This is a div containing some text as well as a list. You can stick jsu about anything in here.
+    <ul>
+        <li>Point 1</li>
+        <li>Point 2</li>
+        <li>Point 3</li>
+    </ul>
+<div>
+```
+
+Most options can be set on a global or per element basis, the only exception being those marked global-only. 
+In the below examples both are doing the same thing, just a different way.
+
+```javascript
+miss({
+    settings: {
+        backdrop_color: '#fff',
+        backdrop_opacity: 0.3
+    },
+    elements: {
+        ".tour": null
+    }
+});
+```
+
+```javascript
+miss({
+    elements: {
+        ".tour": {
+             backdrop_color: '#fff',
+             backdrop_opacity: 0.3
+         }
+    }
+});
+```
 
 ### API Options
-WIP: will be here soon
-<!--
-jQuery Video Lightning exposes all available basic API options for both Youtube and Vimeo. 
-There are also a number of effect and behavior options that are available. The following 
-is the current list of available options.
+Below is a list of all available options. All can be set either withing the settings object or in the element object 
+except for those listed as `global-only` which can only be set within settings.
 
-- **width** *(default="640px")*
-	Y&V: video width in px
-- **height** *(default="390px")*
-	Y&V: video height in px
-- **autoplay** *(default=0)*
-	Y&V: start playback immediately (0,1)
--->
-
+- **theme** *(default=null, accepts=[null, 'custom'])*
+    Theme for walkthrough popovers. Set to `'custom'` to use your own styling.
+- **check_url** *(default=null, accepts=[valid url])* `global-only`
+    URL for miss to check whether walkthrough should automatically show for user. 
+    Should return true/false value for `check_keyname` key and must be in json format.
+    Typically this will be a user preferences endpoint on your app.
+- **check_method** *(default='GET', accepts=['GET','POST'])* `global-only`
+    HTTP method to be used in `check_url`.
+- **check_keyname** *(default=null, accepts=[any valid keyname you choose])* `global-only`
+    Key name to be checked in `check_url`. This key/value pair can be deeply nested.
+- **show_on_load** *(default=true, accepts=[true, false])* `global-only`
+    Should walkthrough show on page load. *Note: it won't again locally show after a user has completed it*
+- **always_show** *(default=null, accepts=[true, false])* `global-only`
+    If set true walkthrough will always show on load regardless of a user having been through it.
+- **trigger_el** *(default=null, accepts=[any valid element selector in string format])* `global-only`
+    Selector of element that will show the tour when clicked, such as a help link.
+- **key_modifier** *(default=null, accepts=['alt', 'ctrl', 'shift', 'cmd'])* `global-only`
+    Key to be used as modifier when walkthrough is not visible. When depressed by user 
+    the popoover will show when the target element is hovered over.
+- **key_on** *(default=null, accepts=[numeric key code])* `global-only`
+    Key used to turn walkthrough on. Must be the numeric key code found in parenthesis within the value column 
+    [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.keyCode#Constants_for_keyCode_value). 
+- **key_off** *(default=null, accepts=[numeric key code])* `global-only`
+    Key used to turn walkthrough off. Must be the numeric key code found in parenthesis within the value column 
+    [here](https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent.keyCode#Constants_for_keyCode_value). 
+- **backdrop** *(default=true, accepts=[true, false])* `global-only`
+    Should backdrop show.
+- **backdrop_color** *(default='#000', accepts=[hex color code])* `global-only`
+    Backdrop color.
+- **backdrop_opacity** *(default=0.5, accepts=[integer less than or equal to 1])* `global-only`
+    Backdrop opacity.
+- **box_width** *(default=null, accepts=[CSS compliant value (i.e. '40%', '200px')])*
+    Width of popover box. 
+- **box_height** *(default=null, accepts=[CSS compliant value (i.e. '40%', '200px')])*
+    Height of popover box.
+- **z_index** *(default=2100, accepts=[integer])* `global-only`
+    z-index of tour elements (starting with backdrop)
+- **highlight** *(default=true, accepts=[true, false])*
+    Highlight the target element with border and exclusion from backdrop.
+- **highlight_width** *(default=3, accepts=[integer])*
+    Pixel width of highlight border.
+- **highlight_color** *(default='#fff', accepts=[hex color code])*
+    Color of highlight border.
+- **btn_prev_text** *(default='&#8592 prev', accepts=[string])*
+    Text to display in 'previous' button.
+- **btn_next_text** *(default='next &#8594', accepts=[string])*
+    Text to display in 'next' button.
+- **btn_done_text** *(default='done', accepts=[string])*
+    Text to display in 'done' button.
+- **order** *(default='series', accepts=['series', integer])*
+    Order that element should go in. Series orders them according to their initialization and dom appearance order.
+- **background_color** *(default='#f5f5f5', accepts=[hex color code])*
+    Color of popover background.
+- **titlebar_color** *(default='#939393', accepts=[hex color code])*
+    Color of title bar background.
+- **font_color** *(default='#000', accepts=[hex color code])*
+    Color of popover text.
+- **title** *(default=null, accepts=[string])*
+    Title to display in popover.
+- **msg** *(default=null, accepts=[string, string interpolated element selector])*
+    Content to display in popover.
+      
 Alternatives
 ----
 There are quite a few commercial projects out there which provide top notch app walkthrough services. 
