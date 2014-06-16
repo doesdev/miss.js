@@ -151,7 +151,7 @@ element with Ruby-esque string interpolation `"#{'#hidden-element'}"`
 ```html
 <div class="tour" data-miss-order="1" data-miss-title="Title A" data-miss-msg="#{'#tour_msg_a'}"></div>
 <div id="tour_msg_a" style="display:none;">
-    <p>This is a div containing some text as well as a list. You can stick jsu about anything in here.
+    <p>This is a div containing some text as well as a list. You can stick just about anything in here.
     <ul>
         <li>Point 1</li>
         <li>Point 2</li>
@@ -259,7 +259,7 @@ do not set the theme option, but we highly recommend that you style the walkthro
  
 We have taken a couple of steps to make that is easy as possible. First we gave everything class names 
 which are listed below. Second we added the necessary classes to be compatible with bootstrap out of the box. 
-So, if you're using bootstrap you don't have to do anything more than setting `theme: 'custom'`.
+So, if you're using bootstrap you don't have to do anything more than setting `theme: 'custom'`. 
 
 **CSS Selectors**   
 Popover Container:   
