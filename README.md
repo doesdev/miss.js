@@ -63,7 +63,8 @@ Features
 Demos
 ----
 We have a super simple demo on our [github page](http://musocrat.github.io/miss.js/). 
-Expect a more through demo in the near future.
+Expect a more thorough demo in the near future there. You can also see it in production at [musocrat](http://musocrat.com), 
+although you do have to sign in first to see it in action.
 
 Docs
 ----
