@@ -380,6 +380,7 @@
 
   # Navigate missies
   miss.current = () ->
+    return unless miss.missies
     return {index: i, missie: m} for m, i in miss.missies when m.box.miss_visible
 
   pageNumbers = (box) ->

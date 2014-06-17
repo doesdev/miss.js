@@ -534,6 +534,9 @@
     };
     miss.current = function() {
       var i, m, _i, _len, _ref;
+      if (!miss.missies) {
+        return;
+      }
       _ref = miss.missies;
       for (i = _i = 0, _len = _ref.length; _i < _len; i = ++_i) {
         m = _ref[i];
