@@ -153,8 +153,8 @@
         this.box.style.height = '';
         this.box.style.maxWidth = this.opts.box_width || (screen.width < 600 ? "85%" : "40%");
         this.box.style.maxHeight = this.opts.box_height || (screen.height < 400 ? "80%" : "60%");
-        this.box.style.width = ("" + this.box.offsetWidth + "px") || this.box.style.maxWidth;
-        this.box.style.height = ("" + this.box.offsetHeight + "px") || this.box.style.maxHeight;
+        this.box.style.width = this.opts.box_width || ("" + this.box.offsetWidth + "px") || this.box.style.maxWidth;
+        this.box.style.height = this.opts.box_height || ("" + this.box.offsetHeight + "px") || this.box.style.maxHeight;
         gravitate = this.el ? gravity(coord, this.box.offsetHeight, this.box.offsetWidth) : {};
         this.box.style.top = "" + (gravitate.x || (testEl().height / 2) - (this.box.offsetHeight / 2)) + "px";
         this.box.style.left = "" + (gravitate.y || (testEl().width / 2) - (this.box.offsetWidth / 2)) + "px";

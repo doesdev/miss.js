@@ -143,8 +143,8 @@
       @box.style.height = ''
       @box.style.maxWidth = @opts.box_width || if screen.width < 600 then "85%" else "40%"
       @box.style.maxHeight = @opts.box_height || if screen.height < 400 then "80%" else "60%"
-      @box.style.width = "#{@box.offsetWidth}px" || @box.style.maxWidth
-      @box.style.height = "#{@box.offsetHeight}px" || @box.style.maxHeight
+      @box.style.width = @opts.box_width || "#{@box.offsetWidth}px" || @box.style.maxWidth
+      @box.style.height = @opts.box_height || "#{@box.offsetHeight}px" || @box.style.maxHeight
       # set box gravity
       gravitate = if @el then gravity(coord, @box.offsetHeight, @box.offsetWidth) else {}
       @box.style.top = "#{gravitate.x || (testEl().height / 2) - (@box.offsetHeight / 2)}px"
