@@ -26,6 +26,7 @@
       order: 'series'
       background_color: '#f5f5f5'
       titlebar_color: '#939393'
+      show_on_hover: true
       font_color: '#000'}
     # initialize backdrop
     backdrop(false)
@@ -415,13 +416,6 @@
       else miss.on(null, true) if miss.global.show_on_load
     setTriggers()
 
-  bindTriggers = () ->
-    miss.on(null, true)
-
-  setTriggers = () ->
-    els = miss.global.trigger_el
-    el.addEventListener('click', bindTriggers, false) for el in document.querySelectorAll.call(document, els)
-
   checkUrl = () ->
     opts = miss.global
     processCheck = () ->
@@ -462,11 +456,18 @@
 
   bindHover = () ->
     return unless miss.global.key_modifier
-    lonelyMissieBind(missie) for missie in miss.missies when missie.el
+    lonelyMissieBind(missie) for missie in miss.missies when missie.el && missie.opts.show_on_hover
 
   lonelyMissieBind = (missie) ->
     missie.el.addEventListener('mouseenter', missie.bindOn, false)
     missie.el.addEventListener('mouseleave', missie.bindOff, false)
+
+  bindTriggers = () ->
+    miss.on(null, true)
+
+  setTriggers = () ->
+    els = miss.global.trigger_el
+    el.addEventListener('click', bindTriggers, false) for el in document.querySelectorAll.call(document, els)
 
   # Plugin states
   miss.on = (alone = null, start = null) ->

@@ -16,6 +16,7 @@
           order: 'series',
           background_color: '#f5f5f5',
           titlebar_color: '#939393',
+          show_on_hover: true,
           font_color: '#000'
         };
       };
@@ -599,20 +600,6 @@
       }
       return setTriggers();
     };
-    bindTriggers = function() {
-      return miss.on(null, true);
-    };
-    setTriggers = function() {
-      var el, els, _i, _len, _ref, _results;
-      els = miss.global.trigger_el;
-      _ref = document.querySelectorAll.call(document, els);
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        el = _ref[_i];
-        _results.push(el.addEventListener('click', bindTriggers, false));
-      }
-      return _results;
-    };
     checkUrl = function() {
       var opts, processCheck, xhr;
       opts = miss.global;
@@ -690,7 +677,7 @@
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         missie = _ref[_i];
-        if (missie.el) {
+        if (missie.el && missie.opts.show_on_hover) {
           _results.push(lonelyMissieBind(missie));
         }
       }
@@ -699,6 +686,20 @@
     lonelyMissieBind = function(missie) {
       missie.el.addEventListener('mouseenter', missie.bindOn, false);
       return missie.el.addEventListener('mouseleave', missie.bindOff, false);
+    };
+    bindTriggers = function() {
+      return miss.on(null, true);
+    };
+    setTriggers = function() {
+      var el, els, _i, _len, _ref, _results;
+      els = miss.global.trigger_el;
+      _ref = document.querySelectorAll.call(document, els);
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        el = _ref[_i];
+        _results.push(el.addEventListener('click', bindTriggers, false));
+      }
+      return _results;
     };
     miss.on = function(alone, start) {
       if (alone == null) {

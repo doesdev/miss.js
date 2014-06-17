@@ -251,6 +251,8 @@ except for those listed as `global-only` which can only be set within settings.
     Title to display in popover.
 - **msg** `(default=null, accepts=[string, string interpolated element selector])`   
     Content to display in popover.
+- **show_on_hover** `(default=true, accepts=[true, false])`   
+    Sets whether element should show popover on hover with `key_modifier` set.
       
 Styling
 ----
