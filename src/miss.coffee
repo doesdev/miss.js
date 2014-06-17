@@ -489,18 +489,18 @@
     miss.settings(misset.settings || null) unless miss.global
 
   miss.destroy = (soft = null) =>
-    for missie in miss.missies
+    if miss.missies then for missie in miss.missies
       if missie.el
         missie.el.removeEventListener('mouseenter', missie.bindOn, false)
         missie.el.removeEventListener('mouseleave', missie.bindOff, false)
       missie.box.parentNode.removeChild(missie.box) if missie.box
-    test = document.getElementById('miss-size-test')
     els = miss.global.trigger_el
     el.removeEventListener('click', bindTriggers, false) for el in document.querySelectorAll.call(document, els)
-    test.parentNode.removeChild(test)
+    test = document.getElementById('miss-size-test')
+    test.parentNode.removeChild(test) if test
     bd = document.getElementById('miss_bd')
-    bd.parentNode.removeChild(bd)
-    document.removeEventListener('keydown', navWithKeys, false)
+    bd.parentNode.removeChild(bd) if bd
+    document.removeEventListener('keydown', navWithKeys, false) unless soft
     delete this.miss unless soft
 
   # Global settings

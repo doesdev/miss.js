@@ -745,28 +745,36 @@
       if (soft == null) {
         soft = null;
       }
-      _ref = miss.missies;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        missie = _ref[_i];
-        if (missie.el) {
-          missie.el.removeEventListener('mouseenter', missie.bindOn, false);
-          missie.el.removeEventListener('mouseleave', missie.bindOff, false);
-        }
-        if (missie.box) {
-          missie.box.parentNode.removeChild(missie.box);
+      if (miss.missies) {
+        _ref = miss.missies;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          missie = _ref[_i];
+          if (missie.el) {
+            missie.el.removeEventListener('mouseenter', missie.bindOn, false);
+            missie.el.removeEventListener('mouseleave', missie.bindOff, false);
+          }
+          if (missie.box) {
+            missie.box.parentNode.removeChild(missie.box);
+          }
         }
       }
-      test = document.getElementById('miss-size-test');
       els = miss.global.trigger_el;
       _ref1 = document.querySelectorAll.call(document, els);
       for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
         el = _ref1[_j];
         el.removeEventListener('click', bindTriggers, false);
       }
-      test.parentNode.removeChild(test);
+      test = document.getElementById('miss-size-test');
+      if (test) {
+        test.parentNode.removeChild(test);
+      }
       bd = document.getElementById('miss_bd');
-      bd.parentNode.removeChild(bd);
-      document.removeEventListener('keydown', navWithKeys, false);
+      if (bd) {
+        bd.parentNode.removeChild(bd);
+      }
+      if (!soft) {
+        document.removeEventListener('keydown', navWithKeys, false);
+      }
       if (!soft) {
         return delete _this.miss;
       }
