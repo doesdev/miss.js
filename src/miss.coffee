@@ -486,6 +486,8 @@
   miss.reset = () ->
     miss.destroy(true)
     miss.missies = []
+    miss.missies = []
+    miss.site = ''
     miss.settings(misset.settings || null) unless miss.global
 
   miss.destroy = (soft = null) =>

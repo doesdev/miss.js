@@ -736,6 +736,8 @@
     miss.reset = function() {
       miss.destroy(true);
       miss.missies = [];
+      miss.missies = [];
+      miss.site = '';
       if (!miss.global) {
         return miss.settings(misset.settings || null);
       }
