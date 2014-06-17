@@ -735,7 +735,10 @@
       return miss.off();
     };
     miss.reset = function(misset) {
-      miss.destroy(true);
+      if (miss.global) {
+        miss.destroy(true);
+      }
+      miss.global = null;
       return miss.settings(misset.settings || null);
     };
     miss.destroy = function(soft) {

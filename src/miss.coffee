@@ -484,7 +484,8 @@
     miss.off()
 
   miss.reset = (misset) ->
-    miss.destroy(true)
+    miss.destroy(true) if miss.global
+    miss.global = null
     miss.settings(misset.settings || null)
 
   miss.destroy = (soft = null) =>
