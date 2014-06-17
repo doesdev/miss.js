@@ -192,6 +192,9 @@ except for those listed as `global-only` which can only be set within settings.
 
 - **theme** `(default=null, accepts=[null, 'custom'])`   
     Theme for walkthrough popovers. Set to `'custom'` to use your own styling.
+- **app_location** `(default=null, accepts=[null, string])`   
+    This option allows you to initialize on different sections / pages of your app independently. Without this set 
+    when one section is completed the tour will not show again on any other pages.
 - **check_url** `(default=null, accepts=[valid url])` `global-only`   
     URL for miss to check whether walkthrough should automatically show for user. 
     Should return true/false value for `check_keyname` key and must be in json format.

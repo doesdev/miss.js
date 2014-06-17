@@ -6,11 +6,11 @@
     var Miss, actOnCheck, backdrop, backdropCanvas, bindHover, bindTriggers, checkUrl, colorConvert, coords, extend, gravity, lonelyMissieBind, message, miss, missShouldShow, navWithKeys, normalizeJSON, pageNumbers, prepHex, resize, setTriggers, showHideEl, sortMissies, testEl;
     miss = function(misset) {
       var defaults, el, i, k, msg, opts, setDefaults, title, type, v, _i, _len, _ref, _ref1;
-      miss.site = window.location.host || window.location.hostname;
       miss.missies = miss.missies || [];
       if (!miss.global) {
         miss.settings(misset.settings || null);
       }
+      miss.site = miss.global.app_location || window.location.host || window.location.hostname;
       setDefaults = function() {
         return {
           order: 'series',

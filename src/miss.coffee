@@ -17,10 +17,10 @@
     #      }
     #    }
     #  });
-    miss.site = window.location.host || window.location.hostname
     # this (miss.missies) is our instance storage array. all miss instances (missies) are pushed into this.
     miss.missies = miss.missies || []
     miss.settings(misset.settings || null) unless miss.global
+    miss.site = miss.global.app_location || window.location.host || window.location.hostname
     # per instance defaults
     setDefaults = -> return {
       order: 'series'
@@ -501,6 +501,7 @@
   miss.settings = (set) ->
     miss.global = extend(
       #theme: null
+      #app_location: null
       #check_url: null
       check_method: 'GET'
       #check_keyname: null
