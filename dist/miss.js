@@ -6,13 +6,14 @@
       _this = this;
     miss = function(misset) {
       var defaults, el, i, k, msg, opts, setDefaults, title, type, v, _i, _len, _ref, _ref1;
-      if (!miss.global) {
-        miss.settings(misset.settings || null);
+      if (misset.settings.app_location) {
+        miss.reset(misset);
+      } else {
+        if (!miss.global) {
+          miss.settings(misset.settings || null);
+        }
       }
-      if (miss.global.app_location) {
-        miss.reset();
-      }
-      miss.missies = miss.missies || [];
+      miss.missies = [];
       miss.site = miss.global.app_location || window.location.host || window.location.hostname;
       setDefaults = function() {
         return {
@@ -733,14 +734,9 @@
       window.localStorage.setItem("" + miss.site + ":missDisable", true);
       return miss.off();
     };
-    miss.reset = function() {
+    miss.reset = function(misset) {
       miss.destroy(true);
-      miss.missies = [];
-      miss.missies = [];
-      miss.site = '';
-      if (!miss.global) {
-        return miss.settings(misset.settings || null);
-      }
+      return miss.settings(misset.settings || null);
     };
     miss.destroy = function(soft) {
       var bd, el, els, missie, test, _i, _j, _len, _len1, _ref, _ref1;

@@ -6,13 +6,14 @@
     var Miss, actOnCheck, backdrop, backdropCanvas, bindHover, bindTriggers, checkUrl, colorConvert, coords, extend, gravity, lonelyMissieBind, message, miss, missShouldShow, navWithKeys, normalizeJSON, pageNumbers, prepHex, resize, setTriggers, showHideEl, sortMissies, testEl;
     miss = function(misset) {
       var defaults, el, i, k, msg, opts, setDefaults, title, type, v, _i, _len, _ref, _ref1;
-      if (!miss.global) {
-        miss.settings(misset.settings || null);
+      if (misset.settings.app_location) {
+        miss.reset(misset);
+      } else {
+        if (!miss.global) {
+          miss.settings(misset.settings || null);
+        }
       }
-      if (miss.global.app_location) {
-        miss.reset();
-      }
-      miss.missies = miss.missies || [];
+      miss.missies = [];
       miss.site = miss.global.app_location || window.location.host || window.location.hostname;
       setDefaults = function() {
         return {
@@ -729,14 +730,9 @@
       window.localStorage.setItem("" + miss.site + ":missDisable", true);
       return miss.off();
     };
-    miss.reset = function() {
+    miss.reset = function(misset) {
       miss.destroy(true);
-      miss.missies = [];
-      miss.missies = [];
-      miss.site = '';
-      if (!miss.global) {
-        return miss.settings(misset.settings || null);
-      }
+      return miss.settings(misset.settings || null);
     };
     miss.destroy = (function(_this) {
       return function(soft) {

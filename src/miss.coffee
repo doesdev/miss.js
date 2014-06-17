@@ -18,9 +18,9 @@
     #    }
     #  });
     # this (miss.missies) is our instance storage array. all miss instances (missies) are pushed into this.
-    miss.settings(misset.settings || null) unless miss.global
-    if miss.global.app_location then miss.reset()
-    miss.missies = miss.missies || []
+    if misset.settings.app_location then miss.reset(misset)
+    else miss.settings(misset.settings || null) unless miss.global
+    miss.missies = []
     miss.site = miss.global.app_location || window.location.host || window.location.hostname
     # per instance defaults
     setDefaults = -> return {
@@ -483,12 +483,9 @@
     window.localStorage.setItem("#{miss.site}:missDisable", true)
     miss.off()
 
-  miss.reset = () ->
+  miss.reset = (misset) ->
     miss.destroy(true)
-    miss.missies = []
-    miss.missies = []
-    miss.site = ''
-    miss.settings(misset.settings || null) unless miss.global
+    miss.settings(misset.settings || null)
 
   miss.destroy = (soft = null) =>
     if miss.missies then for missie in miss.missies
