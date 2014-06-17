@@ -18,8 +18,9 @@
     #    }
     #  });
     # this (miss.missies) is our instance storage array. all miss instances (missies) are pushed into this.
-    miss.missies = miss.missies || []
     miss.settings(misset.settings || null) unless miss.global
+    if miss.global.app_location then miss.reset()
+    miss.missies = miss.missies || []
     miss.site = miss.global.app_location || window.location.host || window.location.hostname
     # per instance defaults
     setDefaults = -> return {
@@ -482,7 +483,12 @@
     window.localStorage.setItem("#{miss.site}:missDisable", true)
     miss.off()
 
-  miss.destroy = () =>
+  miss.reset = () ->
+    miss.destroy(true)
+    miss.missies = []
+    miss.settings(misset.settings || null) unless miss.global
+
+  miss.destroy = (soft = null) =>
     for missie in miss.missies
       if missie.el
         missie.el.removeEventListener('mouseenter', missie.bindOn, false)
@@ -495,7 +501,7 @@
     bd = document.getElementById('miss_bd')
     bd.parentNode.removeChild(bd)
     document.removeEventListener('keydown', navWithKeys, false)
-    delete this.miss
+    delete this.miss unless soft
 
   # Global settings
   miss.settings = (set) ->

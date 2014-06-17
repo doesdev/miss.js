@@ -6,10 +6,13 @@
     var Miss, actOnCheck, backdrop, backdropCanvas, bindHover, bindTriggers, checkUrl, colorConvert, coords, extend, gravity, lonelyMissieBind, message, miss, missShouldShow, navWithKeys, normalizeJSON, pageNumbers, prepHex, resize, setTriggers, showHideEl, sortMissies, testEl;
     miss = function(misset) {
       var defaults, el, i, k, msg, opts, setDefaults, title, type, v, _i, _len, _ref, _ref1;
-      miss.missies = miss.missies || [];
       if (!miss.global) {
         miss.settings(misset.settings || null);
       }
+      if (miss.global.app_location) {
+        miss.reset();
+      }
+      miss.missies = miss.missies || [];
       miss.site = miss.global.app_location || window.location.host || window.location.hostname;
       setDefaults = function() {
         return {
@@ -726,9 +729,19 @@
       window.localStorage.setItem("" + miss.site + ":missDisable", true);
       return miss.off();
     };
+    miss.reset = function() {
+      miss.destroy(true);
+      miss.missies = [];
+      if (!miss.global) {
+        return miss.settings(misset.settings || null);
+      }
+    };
     miss.destroy = (function(_this) {
-      return function() {
+      return function(soft) {
         var bd, el, els, missie, test, _i, _j, _len, _len1, _ref, _ref1;
+        if (soft == null) {
+          soft = null;
+        }
         _ref = miss.missies;
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           missie = _ref[_i];
@@ -751,7 +764,9 @@
         bd = document.getElementById('miss_bd');
         bd.parentNode.removeChild(bd);
         document.removeEventListener('keydown', navWithKeys, false);
-        return delete _this.miss;
+        if (!soft) {
+          return delete _this.miss;
+        }
       };
     })(this);
     miss.settings = function(set) {
