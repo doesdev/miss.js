@@ -420,121 +420,54 @@
       };
     };
     gravity = function(coords, height, width) {
-      var add, arg, args, ary_x, ary_y, box_center, break_loop, center, diff, dk, dv, el_center, i, k, key, loc, map_x, map_y, mapping_x, mapping_y, optimal_x, optimal_y, overlap, pos, pos_ref, position, sort, v, val, value, x, y, _i, _j, _k, _len, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+      var box_center, center, el_center, points, sort, x, y, _i, _j, _ref, _ref1, _ref2, _ref3;
       center = {
-        x: testEl().height / 2,
-        y: testEl().width / 2
+        x: testEl().width / 2,
+        y: testEl().height / 2
       };
       el_center = {
-        x: coords.height / 2,
-        y: coords.width / 2
+        x: coords.width / 2,
+        y: coords.height / 2
       };
       box_center = {
-        x: height / 2,
-        y: width / 2
+        x: width / 2,
+        y: height / 2
       };
-      mapping_x = {
-        plane: 'x',
-        metric: height,
-        mstr: 'height',
-        array: map_x = [],
-        optimal: optimal_x = [],
-        diffs: ary_x = [],
-        setup: {
-          top: null,
-          middle: [el_center.x, 'top'],
-          bottom: null
-        }
-      };
-      mapping_y = {
-        plane: 'y',
-        metric: width,
-        mstr: 'width',
-        array: map_y = [],
-        optimal: optimal_y = [],
-        diffs: ary_y = [],
-        setup: {
-          left: null,
-          middle: [el_center.y, 'left'],
-          right: null
-        }
-      };
+      points = [];
+      for (x = _i = _ref = coords.left, _ref1 = coords.right + width; _i <= _ref1; x = _i += 20) {
+        points.push([x - width, coords.top - height]);
+        points.push([x - width, coords.bottom]);
+      }
+      for (y = _j = _ref2 = coords.top, _ref3 = coords.bottom + height; _j <= _ref3; y = _j += 20) {
+        points.push([coords.left - width, y - height]);
+        points.push([coords.right, y - height]);
+      }
       sort = function(a, b) {
-        return a - b;
+        var ary, dax, day, obja, objb, _k, _len, _ref4;
+        _ref4 = [[a, obja = {}], [b, objb = {}]];
+        for (_k = 0, _len = _ref4.length; _k < _len; _k++) {
+          ary = _ref4[_k];
+          x = ary[0][0];
+          y = ary[0][1];
+          ary[1].diffx = (dax = x + box_center.x) > center.x ? dax - center.x : center.x - dax;
+          ary[1].diffy = (day = y + box_center.y) > center.y ? day - center.y : center.y - day;
+          ary[1].diff = ary[1].diffx + ary[1].diffy;
+          if (x < 0 || x + width > testEl().width) {
+            ary[1].diff = +10000;
+          }
+          if (y < 0 || y + height > testEl().height) {
+            ary[1].diff = +10000;
+          }
+        }
+        return obja.diff - objb.diff;
       };
-      _ref = [mapping_x, mapping_y];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        args = _ref[_i];
-        _ref1 = args.setup;
-        for (pos in _ref1) {
-          arg = _ref1[pos];
-          if (arg) {
-            add = arg[0];
-            loc = arg[1];
-          } else {
-            add = 0;
-            loc = pos;
-          }
-          diff = {};
-          val = {};
-          diff[Object.keys(args.setup)[0]] = Math.abs(coords[loc] - box_center[args.plane] - center[args.plane] + add);
-          diff[Object.keys(args.setup)[1]] = Math.abs(coords[loc] - center[args.plane] + add);
-          diff[Object.keys(args.setup)[2]] = Math.abs(coords[loc] + box_center[args.plane] - center[args.plane] + add);
-          val[Object.keys(args.setup)[0]] = coords[loc] - args.metric + add;
-          val[Object.keys(args.setup)[1]] = coords[loc] - box_center[args.plane] + add;
-          val[Object.keys(args.setup)[2]] = coords[loc] + add;
-          position = pos;
-          args.array.push({
-            diff: diff,
-            val: val,
-            position: position
-          });
-        }
-        _ref2 = args.array;
-        for (k in _ref2) {
-          v = _ref2[k];
-          _ref3 = v.diff;
-          for (key in _ref3) {
-            value = _ref3[key];
-            args.diffs.push(value);
-          }
-        }
-        args.diffs.sort(sort);
-        pos_ref = args.setup.middle[1];
-        for (i = _j = 0; _j <= 8; i = ++_j) {
-          break_loop = false;
-          _ref4 = args.array;
-          for (k in _ref4) {
-            v = _ref4[k];
-            _ref5 = v.diff;
-            for (dk in _ref5) {
-              dv = _ref5[dk];
-              if (dv === args.diffs[i] && v.val[dk] >= 0 && (v.val[dk] + args.metric) < testEl().width) {
-                overlap = (val = v.val[dk]) < coords[pos_ref] + coords[args.mstr] && val + args.metric > coords[pos_ref];
-                args.optimal.push({
-                  val: val,
-                  diff: dv,
-                  position: "" + v.position + "_" + dk,
-                  overlap: overlap
-                });
-                break_loop = true;
-                break;
-              }
-            }
-            if (break_loop) {
-              break;
-            }
-          }
-        }
-      }
-      for (i = _k = 0; _k <= 8; i = ++_k) {
-        if ((x = optimal_x[i]) && (y = optimal_y[i]) && !(x.overlap && y.overlap)) {
-          break;
-        }
-      }
+      points.sort(sort);
+      x = points[0][0];
+      y = points[0][1];
+      points = null;
       return {
-        x: x ? x.val : center.x - box_center.x,
-        y: y ? y.val : center.y - box_center.y
+        x: y,
+        y: x
       };
     };
     miss.current = function() {
