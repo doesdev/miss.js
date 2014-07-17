@@ -149,8 +149,8 @@
       @box.style.height = @opts.box_height || "#{@box.offsetHeight}px" || @box.style.maxHeight
       # set box gravity
       gravitate = if @el then gravity(coord, @box.offsetHeight, @box.offsetWidth) else {}
-      @box.style.top = "#{gravitate.x || (testEl().height / 2) - (@box.offsetHeight / 2)}px"
-      @box.style.left = "#{gravitate.y || (testEl().width / 2) - (@box.offsetWidth / 2)}px"
+      @box.style.top = "#{gravitate.y || (testEl().height / 2) - (@box.offsetHeight / 2)}px"
+      @box.style.left = "#{gravitate.x || (testEl().width / 2) - (@box.offsetWidth / 2)}px"
       # hide again
       unless bd_miss_visible
         miss.bd.style.visibility = ''
@@ -326,22 +326,15 @@
 
   # Gravitate to center
   gravity = (coords, height, width) ->
-    center =
-      x: testEl().width / 2
-      y: testEl().height / 2
-    el_center =
-      x: coords.width / 2
-      y: coords.height / 2
-    box_center =
-      x: width / 2
-      y: height / 2
-
+    center = x: testEl().width / 2, y: testEl().height / 2
+    box_center = x: width / 2, y: height / 2
     points = []
-    for x in [coords.left..(coords.right + width)] by 20
+
+    for x in [coords.left..(coords.right + width)] by miss.global.fluidity
       points.push([x - width, coords.top - height])
       points.push([x - width, coords.bottom])
 
-    for y in [coords.top..(coords.bottom + height)] by 20
+    for y in [coords.top..(coords.bottom + height)] by miss.global.fluidity
       points.push([coords.left - width, y - height])
       points.push([coords.right, y - height])
 
@@ -357,11 +350,8 @@
       obja.diff - objb.diff
 
     points.sort(sort)
-    x = points[0][0]
-    y = points[0][1]
-    points = null
-    x: y
-    y: x
+    x: points[0][0]
+    y: points[0][1]
 
   # Navigate missies
   miss.current = () ->
@@ -512,6 +502,7 @@
       btn_prev_text: '&#8592 prev'
       btn_next_text: 'next &#8594'
       btn_done_text: 'done'
+      fluidity: 30
     , set)
 
   this.miss = miss

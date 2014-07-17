@@ -161,8 +161,8 @@
         this.box.style.width = this.opts.box_width || ("" + this.box.offsetWidth + "px") || this.box.style.maxWidth;
         this.box.style.height = this.opts.box_height || ("" + this.box.offsetHeight + "px") || this.box.style.maxHeight;
         gravitate = this.el ? gravity(coord, this.box.offsetHeight, this.box.offsetWidth) : {};
-        this.box.style.top = "" + (gravitate.x || (testEl().height / 2) - (this.box.offsetHeight / 2)) + "px";
-        this.box.style.left = "" + (gravitate.y || (testEl().width / 2) - (this.box.offsetWidth / 2)) + "px";
+        this.box.style.top = "" + (gravitate.y || (testEl().height / 2) - (this.box.offsetHeight / 2)) + "px";
+        this.box.style.left = "" + (gravitate.x || (testEl().width / 2) - (this.box.offsetWidth / 2)) + "px";
         if (!bd_miss_visible) {
           miss.bd.style.visibility = '';
           miss.off();
@@ -420,33 +420,29 @@
       };
     };
     gravity = function(coords, height, width) {
-      var box_center, center, el_center, points, sort, x, y, _i, _j, _ref, _ref1, _ref2, _ref3;
+      var box_center, center, points, sort, x, y, _i, _j, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
       center = {
         x: testEl().width / 2,
         y: testEl().height / 2
-      };
-      el_center = {
-        x: coords.width / 2,
-        y: coords.height / 2
       };
       box_center = {
         x: width / 2,
         y: height / 2
       };
       points = [];
-      for (x = _i = _ref = coords.left, _ref1 = coords.right + width; _i <= _ref1; x = _i += 20) {
+      for (x = _i = _ref = coords.left, _ref1 = coords.right + width, _ref2 = miss.global.fluidity; _ref2 > 0 ? _i <= _ref1 : _i >= _ref1; x = _i += _ref2) {
         points.push([x - width, coords.top - height]);
         points.push([x - width, coords.bottom]);
       }
-      for (y = _j = _ref2 = coords.top, _ref3 = coords.bottom + height; _j <= _ref3; y = _j += 20) {
+      for (y = _j = _ref3 = coords.top, _ref4 = coords.bottom + height, _ref5 = miss.global.fluidity; _ref5 > 0 ? _j <= _ref4 : _j >= _ref4; y = _j += _ref5) {
         points.push([coords.left - width, y - height]);
         points.push([coords.right, y - height]);
       }
       sort = function(a, b) {
-        var ary, dax, day, obja, objb, _k, _len, _ref4;
-        _ref4 = [[a, obja = {}], [b, objb = {}]];
-        for (_k = 0, _len = _ref4.length; _k < _len; _k++) {
-          ary = _ref4[_k];
+        var ary, dax, day, obja, objb, _k, _len, _ref6;
+        _ref6 = [[a, obja = {}], [b, objb = {}]];
+        for (_k = 0, _len = _ref6.length; _k < _len; _k++) {
+          ary = _ref6[_k];
           x = ary[0][0];
           y = ary[0][1];
           ary[1].diffx = (dax = x + box_center.x) > center.x ? dax - center.x : center.x - dax;
@@ -462,12 +458,9 @@
         return obja.diff - objb.diff;
       };
       points.sort(sort);
-      x = points[0][0];
-      y = points[0][1];
-      points = null;
       return {
-        x: y,
-        y: x
+        x: points[0][0],
+        y: points[0][1]
       };
     };
     miss.current = function() {
@@ -726,7 +719,8 @@
         highlight_color: '#fff',
         btn_prev_text: '&#8592 prev',
         btn_next_text: 'next &#8594',
-        btn_done_text: 'done'
+        btn_done_text: 'done',
+        fluidity: 30
       }, set);
     };
     return this.miss = miss;
