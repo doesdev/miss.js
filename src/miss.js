@@ -135,7 +135,7 @@
       };
 
       Miss.prototype.boxSizing = function() {
-        var bd_miss_visible, box_miss_visible, coord, gravitate, screen;
+        var bd_miss_visible, box_coord, box_miss_visible, coord, gravitate, screen;
         if (this.el) {
           coord = coords(this.el);
         }
@@ -156,9 +156,11 @@
         this.box.style.maxHeight = this.opts.box_height || (screen.height < 400 ? "80%" : "60%");
         this.box.style.width = this.opts.box_width || ("" + this.box.offsetWidth + "px") || this.box.style.maxWidth;
         this.box.style.height = this.opts.box_height || ("" + this.box.offsetHeight + "px") || this.box.style.maxHeight;
+        box_coord = coords(this.box);
         gravitate = this.el ? gravity(coord, this.box.offsetHeight, this.box.offsetWidth) : {};
-        this.box.style.top = "" + (gravitate.y || (testEl().height / 2) - (this.box.offsetHeight / 2)) + "px";
-        this.box.style.left = "" + (gravitate.x || (testEl().width / 2) - (this.box.offsetWidth / 2)) + "px";
+        this.box.style.transition = 'top 300ms ease-in-out, left 300ms ease-in-out';
+        this.box.style.top = "" + (gravitate.y || (screen.height / 2) - (box_coord.height / 2)) + "px";
+        this.box.style.left = "" + (gravitate.x || (screen.width / 2) - (box_coord.width / 2)) + "px";
         if (!bd_miss_visible) {
           miss.bd.style.visibility = '';
           miss.off();
@@ -416,10 +418,10 @@
       };
     };
     gravity = function(coords, height, width) {
-      var box_center, center, points, sort, x, y, _i, _j, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+      var box_center, center, page_height, page_width, points, sort, x, y, _i, _j, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
       center = {
-        x: testEl().width / 2,
-        y: testEl().height / 2
+        x: (page_width = testEl().width) / 2,
+        y: (page_height = testEl().height) / 2
       };
       box_center = {
         x: width / 2,
@@ -441,22 +443,22 @@
           ary = _ref6[_k];
           x = ary[0][0];
           y = ary[0][1];
-          ary[1]['diffx'] = (dax = x + box_center.x) > center.x ? dax - center.x : center.x - dax;
-          ary[1]['diffy'] = (day = y + box_center.y) > center.y ? day - center.y : center.y - day;
-          ary[1]['diff'] = ary[1]['diffx'] + ary[1]['diffy'];
-          if (x < 0 || x + width > testEl().width) {
-            ary[1]['diff'] = +10000;
+          ary[1].diffx = (dax = x + box_center.x) > center.x ? dax - center.x : center.x - dax;
+          ary[1].diffy = (day = y + box_center.y) > center.y ? day - center.y : center.y - day;
+          ary[1].diff = ary[1].diffx + ary[1].diffy;
+          if (x < 0 || x + width > page_width) {
+            ary[1].diff = +10000;
           }
-          if (y < 0 || y + height > testEl().height) {
-            ary[1]['diff'] = +10000;
+          if (y < 0 || y + height > page_height) {
+            ary[1].diff = +10000;
           }
         }
         return obja.diff - objb.diff;
       };
       points.sort(sort);
       return {
-        x: points[0][0],
-        y: points[0][1]
+        x: (x = points[0][0]) < 0 || x + width > page_width ? center.x - box_center.x : x,
+        y: (y = points[0][1]) < 0 || y + height > page_height ? center.y - box_center.y : y
       };
     };
     miss.current = function() {
@@ -557,15 +559,21 @@
       }
     };
     resize = function() {
-      var missie, _i, _len, _ref, _results;
-      backdropCanvas();
-      _ref = miss.missies;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        missie = _ref[_i];
-        _results.push(missie.resize());
+      var missie, _i, _len, _ref;
+      if (!miss.throttle) {
+        backdropCanvas();
+        _ref = miss.missies;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          missie = _ref[_i];
+          missie.resize();
+        }
+        if (miss.global.throttle) {
+          miss.throttle = true;
+          return setTimeout((function() {
+            return miss.throttle = false;
+          }), miss.global.throttle);
+        }
       }
-      return _results;
     };
     window.onresize = function() {
       return resize();
