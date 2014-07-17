@@ -85,7 +85,7 @@
       title_box = document.createElement('div')
       title_box.className = 'miss-titlebar popover-title'
       close = '<span style="float:right;cursor:pointer;" onclick="miss.off()"
-               class="miss-close close" aria-hidden="true">&times;</span>'
+                           class="miss-close close" aria-hidden="true">&times;</span>'
       title_box.innerHTML = @title + close
       # content area
       msg_box = document.createElement('div')
@@ -98,9 +98,9 @@
       nav_box.className = 'miss-nav'
       # navigation
       nav_btns = '<div class="miss-btn-group btn-group">
-              <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button>
-              <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button>
-              <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>'
+                          <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button>
+                          <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button>
+                          <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>'
       page_num = '<p class="miss-step-num text-center"></p>'
       # apply (minimal) styling if no theme set
       unless miss.global.theme
@@ -147,10 +147,12 @@
       @box.style.maxHeight = @opts.box_height || if screen.height < 400 then "80%" else "60%"
       @box.style.width = @opts.box_width || "#{@box.offsetWidth}px" || @box.style.maxWidth
       @box.style.height = @opts.box_height || "#{@box.offsetHeight}px" || @box.style.maxHeight
+      box_coord = coords(@box)
       # set box gravity
-      gravitate = if @el then gravity(coord, @box.offsetHeight, @box.offsetWidth) else {}
-      @box.style.top = "#{gravitate.y || (testEl().height / 2) - (@box.offsetHeight / 2)}px"
-      @box.style.left = "#{gravitate.x || (testEl().width / 2) - (@box.offsetWidth / 2)}px"
+      gravitate = if @el then gravity(coord, box_coord.height, box_coord.width) else {}
+      @box.style.transition = 'top 300ms ease-in-out, left 300ms ease-in-out'
+      @box.style.top = "#{gravitate.y || (screen.height / 2) - (box_coord.height / 2)}px"
+      @box.style.left = "#{gravitate.x || (screen.width / 2) - (box_coord.width / 2)}px"
       # hide again
       unless bd_miss_visible
         miss.bd.style.visibility = ''
@@ -326,7 +328,7 @@
 
   # Gravitate to center
   gravity = (coords, height, width) ->
-    center = x: testEl().width / 2, y: testEl().height / 2
+    center = x: (page_width = testEl().width) / 2, y: (page_height = testEl().height) / 2
     box_center = x: width / 2, y: height / 2
     points = []
 
@@ -345,13 +347,13 @@
         ary[1].diffx = if (dax = (x + box_center.x)) > center.x then dax - center.x else center.x - dax
         ary[1].diffy = if (day = (y + box_center.y)) > center.y then day - center.y else center.y - day
         ary[1].diff = ary[1].diffx + ary[1].diffy
-        if x < 0 || x + width > testEl().width then ary[1].diff =+ 10000
-        if y < 0 || y + height > testEl().height then ary[1].diff =+ 10000
+        if x < 0 || x + width > page_width then ary[1].diff =+ 10000
+        if y < 0 || y + height > page_height then ary[1].diff =+ 10000
       obja.diff - objb.diff
 
     points.sort(sort)
-    x: points[0][0]
-    y: points[0][1]
+    x: if (x = points[0][0]) < 0 || x + width > page_width then center.x - box_center.x else x
+    y: if (y = points[0][1]) < 0 || y + height > page_height then center.y - box_center.y else y
 
   # Navigate missies
   miss.current = () ->
@@ -409,8 +411,13 @@
 
   # Resize event handlers
   resize = () ->
-    backdropCanvas()
-    missie.resize() for missie in miss.missies
+    unless miss.throttle
+      backdropCanvas()
+      missie.resize() for missie in miss.missies
+      if miss.global.throttle
+        miss.throttle = true
+        throttleOff = -> miss.throttle = false
+        setTimeout(throttleOff, miss.global.throttle)
 
   window.onresize = -> resize()
   window.onscroll = -> resize()
@@ -503,6 +510,7 @@
       btn_next_text: 'next &#8594'
       btn_done_text: 'done'
       fluidity: 30
+      #throttle: null
     , set)
 
   this.miss = miss

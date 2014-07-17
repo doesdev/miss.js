@@ -99,7 +99,7 @@
         title_box = document.createElement('div');
         title_box.className = 'miss-titlebar popover-title';
         close = '<span style="float:right;cursor:pointer;" onclick="miss.off()"\
-               class="miss-close close" aria-hidden="true">&times;</span>';
+                           class="miss-close close" aria-hidden="true">&times;</span>';
         title_box.innerHTML = this.title + close;
         msg_box = document.createElement('div');
         msg_box.className = 'miss-msg popover-content';
@@ -110,9 +110,9 @@
         nav_box.id = "miss_nav_" + this.index;
         nav_box.className = 'miss-nav';
         nav_btns = '<div class="miss-btn-group btn-group">\
-              <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button>\
-              <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button>\
-              <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>';
+                          <button class="miss-prev btn btn-default" onclick="miss.previous();">&#8592 prev</button>\
+                          <button class="miss-next btn btn-default" onclick="miss.next();">next &#8594</button>\
+                          <button class="miss-done btn btn-primary pull-right" onclick="miss.done();">done</button></div>';
         page_num = '<p class="miss-step-num text-center"></p>';
         if (!miss.global.theme) {
           rgba = colorConvert(this.opts.titlebar_color);
@@ -139,7 +139,7 @@
       };
 
       Miss.prototype.boxSizing = function() {
-        var bd_miss_visible, box_miss_visible, coord, gravitate, screen;
+        var bd_miss_visible, box_coord, box_miss_visible, coord, gravitate, screen;
         if (this.el) {
           coord = coords(this.el);
         }
@@ -160,9 +160,11 @@
         this.box.style.maxHeight = this.opts.box_height || (screen.height < 400 ? "80%" : "60%");
         this.box.style.width = this.opts.box_width || ("" + this.box.offsetWidth + "px") || this.box.style.maxWidth;
         this.box.style.height = this.opts.box_height || ("" + this.box.offsetHeight + "px") || this.box.style.maxHeight;
-        gravitate = this.el ? gravity(coord, this.box.offsetHeight, this.box.offsetWidth) : {};
-        this.box.style.top = "" + (gravitate.y || (testEl().height / 2) - (this.box.offsetHeight / 2)) + "px";
-        this.box.style.left = "" + (gravitate.x || (testEl().width / 2) - (this.box.offsetWidth / 2)) + "px";
+        box_coord = coords(this.box);
+        gravitate = this.el ? gravity(coord, box_coord.height, box_coord.width) : {};
+        this.box.style.transition = 'top 300ms ease-in-out, left 300ms ease-in-out';
+        this.box.style.top = "" + (gravitate.y || (screen.height / 2) - (box_coord.height / 2)) + "px";
+        this.box.style.left = "" + (gravitate.x || (screen.width / 2) - (box_coord.width / 2)) + "px";
         if (!bd_miss_visible) {
           miss.bd.style.visibility = '';
           miss.off();
@@ -420,10 +422,10 @@
       };
     };
     gravity = function(coords, height, width) {
-      var box_center, center, points, sort, x, y, _i, _j, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
+      var box_center, center, page_height, page_width, points, sort, x, y, _i, _j, _ref, _ref1, _ref2, _ref3, _ref4, _ref5;
       center = {
-        x: testEl().width / 2,
-        y: testEl().height / 2
+        x: (page_width = testEl().width) / 2,
+        y: (page_height = testEl().height) / 2
       };
       box_center = {
         x: width / 2,
@@ -448,10 +450,10 @@
           ary[1].diffx = (dax = x + box_center.x) > center.x ? dax - center.x : center.x - dax;
           ary[1].diffy = (day = y + box_center.y) > center.y ? day - center.y : center.y - day;
           ary[1].diff = ary[1].diffx + ary[1].diffy;
-          if (x < 0 || x + width > testEl().width) {
+          if (x < 0 || x + width > page_width) {
             ary[1].diff = +10000;
           }
-          if (y < 0 || y + height > testEl().height) {
+          if (y < 0 || y + height > page_height) {
             ary[1].diff = +10000;
           }
         }
@@ -459,8 +461,8 @@
       };
       points.sort(sort);
       return {
-        x: points[0][0],
-        y: points[0][1]
+        x: (x = points[0][0]) < 0 || x + width > page_width ? center.x - box_center.x : x,
+        y: (y = points[0][1]) < 0 || y + height > page_height ? center.y - box_center.y : y
       };
     };
     miss.current = function() {
@@ -561,15 +563,22 @@
       }
     };
     resize = function() {
-      var missie, _i, _len, _ref, _results;
-      backdropCanvas();
-      _ref = miss.missies;
-      _results = [];
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        missie = _ref[_i];
-        _results.push(missie.resize());
+      var missie, throttleOff, _i, _len, _ref;
+      if (!miss.throttle) {
+        backdropCanvas();
+        _ref = miss.missies;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          missie = _ref[_i];
+          missie.resize();
+        }
+        if (miss.global.throttle) {
+          miss.throttle = true;
+          throttleOff = function() {
+            return miss.throttle = false;
+          };
+          return setTimeout(throttleOff, miss.global.throttle);
+        }
       }
-      return _results;
     };
     window.onresize = function() {
       return resize();
