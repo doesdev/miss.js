@@ -224,12 +224,16 @@ except for those listed as `global-only` which can only be set within settings.
     Backdrop color.
 - **backdrop_opacity** `(default=0.5, accepts=[integer less than or equal to 1])` `global-only`   
     Backdrop opacity.
+- **z_index** `(default=2100, accepts=[integer])` `global-only`   
+    z-index of tour elements (starting with backdrop)
+- **fluidity** `(default=30, accepts=[integer])` `global-only`   
+    Sets number of pixel blocks popover should move in on resize events. Lower is smoother but at a performance cost.
+- **throttle** `(default=null, accepts=[integer])` `global-only`   
+    Rate limit in ms between resize events. This can increase performance but at the cost of smoothness and accuracy.
 - **box_width** `(default=null, accepts=[CSS compliant value (i.e. '40%', '200px')])`   
     Width of popover box. 
 - **box_height** `(default=null, accepts=[CSS compliant value (i.e. '40%', '200px')])`   
     Height of popover box.
-- **z_index** `(default=2100, accepts=[integer])` `global-only`   
-    z-index of tour elements (starting with backdrop)
 - **highlight** `(default=true, accepts=[true, false])`   
     Highlight the target element with border and exclusion from backdrop.
 - **highlight_width** `(default=3, accepts=[integer])`   
