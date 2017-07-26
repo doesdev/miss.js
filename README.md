@@ -1,6 +1,8 @@
 ![alt text](http://musocrat.github.io/miss.js/img/miss.js-logo-100.png "Miss.js Logo") Miss.js [![Build Status](https://travis-ci.org/musocrat/miss.js.png)](https://travis-ci.org/musocrat/miss.js)
 ======================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/doesdev/miss.js.svg)](https://greenkeeper.io/)
+
 ###Make it simple stupid.
 
 Miss.js is a javascript plugin that empowers you to make complex apps simple for users to grasp. 
